@@ -1,0 +1,22 @@
+{
+  "name": "cerebro",
+  "version": "0.0.1",
+  "description": "nao sei como descrever, apenas sentir",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/ericbreno/aleatoriedades"
+  },
+  "keywords": [
+    "aleatoriedades",
+    "aleatorias"
+  ],
+  "author": "Eric Breno",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
