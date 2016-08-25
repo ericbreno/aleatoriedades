@@ -6,6 +6,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
     <script src="MainService.js"></script>
     <script src="MainController.js"></script>
+    <script src="SecController.js"></script>
     <!--<script src="test.js"></script>-->
     <meta charset="UTF-8">
     <style type='text/css'>
@@ -36,28 +37,44 @@
         }
     </style>
 </head>
+
 <body ng-app="App">
     <h1>PubSub Sample using Atmosphere's Javascript Library and a <a href="https://github.com/Atmosphere/atmosphere-samples/blob/master/samples/jersey-pubsub/src/main/java/org/atmosphere/samples/pubsub/JerseyPubSub.java">Jersey's Resource</a></h1>
     <div ng-controller="MainController as controller">
-        <h2>Select PubSub topic to subscribe</h2>
+        <h2>Selecione o canal a entrar:</h2>
         <div id='pubsub'>
-            <input type='text' ng-model="canal"/>
+            <input type='text' ng-model="canal" />
             <button ng-click="controller.subscrever(canal)">Inscrever</button>
         </div>
         <br/>
         <br/>
-        <div ng-repeat="msg in controller.getMsgs() track by $index">
-            {{ msg }}
-        </div>
         <div>
+            <h2>Insira sua mensagem:</h2>
             <input type="text" ng-model="mensagem" />
             <button ng-click="controller.enviar(mensagem)">Enviar!</button>
-            <br/>
-            <h2>Real Time PubSub Update</h2>
-            <ul></ul>
+        </div>
+        <br/>
+        <div ng-repeat="msg in controller.msgs track by $index">
+            <p ng-bind="msg"></p>
         </div>
     </div>
-
-</body>-->
-
+    <div ng-controller="SecController as controller">
+        <h2>Selecione o canal a entrar:</h2>
+        <div id='pubsub'>
+            <input type='text' ng-model="canalDois" />
+            <button ng-click="controller.subscrever(canalDois)">Inscrever</button>
+        </div>
+        <br/>
+        <br/>
+        <div>
+            <h2>Insira sua mensagem:</h2>
+            <input type="text" ng-model="mensagemDois" />
+            <button ng-click="controller.enviar(mensagemDois)">Enviar!</button>
+        </div>
+        <br/>
+        <div ng-repeat="msg in controller.msgs track by $index">
+            <p ng-bind="msg"></p>
+        </div>
+    </div>
+</body>
 </html>

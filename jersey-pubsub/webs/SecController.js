@@ -3,7 +3,7 @@
 
     var module = angular.module("App");
 
-    module.controller("MainController", ['MainService', function (MainService) {
+    module.controller("SecController", ['MainService', function (MainService) {
 
         var self = this;
         

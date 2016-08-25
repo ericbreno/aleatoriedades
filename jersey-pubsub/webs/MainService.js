@@ -26,6 +26,10 @@
         };
 
         this.enviarMsg = function (mensagem) {
+            if (subSocket === undefined) {
+                alert("Voce precisa entrar em uma sala antes de começar!");
+                return;
+            }
             subSocket.push({ data: "message=" + mensagem });
         };
     }])

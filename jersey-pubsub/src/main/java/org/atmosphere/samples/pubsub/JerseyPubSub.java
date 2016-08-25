@@ -15,11 +15,6 @@
  */
 package org.atmosphere.samples.pubsub;
 
-import org.atmosphere.annotation.Broadcast;
-import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.jersey.Broadcastable;
-import org.atmosphere.jersey.SuspendResponse;
-
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,36 +22,55 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.Universe;
+import org.atmosphere.jersey.Broadcastable;
+import org.atmosphere.jersey.SuspendResponse;
+
 /**
  * Simple PubSub resource that demonstrate many functionality supported by
  * Atmosphere Javascript and Atmosphere Jersey extension.
  *
  * @author Jeanfrancois Arcand
  */
-@Path("/pubsub/{topic}")
+@Path("/pubsub/{canal}")
 public class JerseyPubSub {
 
-    private
-    @PathParam("topic")
-    Broadcaster topic;
+	private BroadcasterFactory factory;
+	
+	@PathParam("canal")
+	String canal;
+	
+	@GET
+	public SuspendResponse<String> subscribe() {
+		factory = Universe.broadcasterFactory();
+		
+		Broadcaster br = getBroadcaster(canal, true);
+		System.out.println("Fazendo inscrição para " + br.getID());
+		
+		return new SuspendResponse.SuspendResponseBuilder<String>().broadcaster(br).outputComments(true)
+				.addListener(new EventsLogger()).build();
+	}
+	
+	@POST
+	@Broadcast
+	@Produces("text/html;charset=ISO-8859-1")
+	public Broadcastable publishAA(@FormParam("message") String message) {
+		factory = Universe.broadcasterFactory();
+		message = message == null ? "random" : message;
+		Broadcaster br = getBroadcaster(canal, false);
+		if (br == null) {
+			System.out.println("Nao deu");
+			return null;
+		}
+		System.out.println("Enviando mensagem " + message + " para " + br.getID());
 
-    @GET
-    public SuspendResponse<String> subscribe() {
+		return new Broadcastable(message, "", br);
+	}
 
-        System.out.println("Fazendo inscrição para " + topic.getID());
-
-        return new SuspendResponse.SuspendResponseBuilder<String>()
-                .broadcaster(topic)
-                .outputComments(true)
-                .addListener(new EventsLogger())
-                .build();
-    }
-
-    @POST
-    @Broadcast
-    @Produces("text/html;charset=ISO-8859-1")
-    public Broadcastable publish(@FormParam("message") String message) {
-        System.out.println("Enviando mensagem " + message);
-        return new Broadcastable(message, "", topic);
-    }
+	private synchronized Broadcaster getBroadcaster(String canal, boolean criar) {
+		return factory.lookup(canal, criar);
+	}
 }
