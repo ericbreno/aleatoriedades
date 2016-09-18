@@ -13,8 +13,11 @@
 
         <button class="container btn btn-danger" ng-click="controller.popUp()">Click me!</button>
 
-        <input class="container" type="text" ng-model="textoMsg" />
-        <button class="container" type="submit" ng-click="controller.mudarMsg(textoMsg)">Mudar</button>
+        <h3 class="text-center">Mensagem para mudar em todas abas:</h3>
+        <form>
+            <input class="container" type="text" ng-model="textoMsg" />
+            <button class="container btn btn-info" type="submit" ng-click="controller.mudarMsg(textoMsg)">Mudar</button>
+        </form>
     </div>
 
     <!--Scripts-->
