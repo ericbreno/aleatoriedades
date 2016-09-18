@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Birl</title>
+</head>
+
+<body ng-app="App">
+    <div class="container" ng-controller="MainController as controller">
+        <h3 class="jumbotron text-center">it's workin!</h3>
+        <h2 class="text-center"> Mensagem: {{ estado }}</h2>
+        <h2 class="text-center"> Estou como dono? {{ descubra }} </h2>
+
+        <button class="container btn btn-danger" ng-click="controller.popUp()">Click me!</button>
+
+        <input class="container" type="text" ng-model="textoMsg" />
+        <button class="container" type="submit" ng-click="controller.mudarMsg(textoMsg)">Mudar</button>
+    </div>
+
+    <!--Scripts-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script type="text/javascript" src="js/angular.min.js"></script>
+
+    <!--Controllers-->
+    <script type="text/javascript" src="js/controllers/MainController.js"></script>
+</body>
