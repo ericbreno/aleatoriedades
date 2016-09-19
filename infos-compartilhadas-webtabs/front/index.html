@@ -6,12 +6,12 @@
 </head>
 
 <body ng-app="App">
-    <div class="container" ng-controller="MainController as controller">
+    <div class="container" ng-controller="SecController as controller">
         <h3 class="jumbotron text-center">it's workin!</h3>
         <h2 class="text-center"> Mensagem: {{ estado }}</h2>
         <h2 class="text-center"> Estou como dono? {{ descubra }} </h2>
 
-        <button class="container btn btn-danger" ng-click="controller.popUp()">Click me!</button>
+        <button class="container btn btn-danger" ng-click="controller.newTab()">Click me!</button>
 
         <h3 class="text-center">Mensagem para mudar em todas abas:</h3>
         <form>
@@ -25,6 +25,10 @@
         crossorigin="anonymous">
     <script type="text/javascript" src="js/angular.min.js"></script>
 
+    <!--Services-->
+    <script type="text/javascript" src="js/services/MainService.js"></script>
+
     <!--Controllers-->
     <script type="text/javascript" src="js/controllers/MainController.js"></script>
+    <script type="text/javascript" src="js/controllers/SecController.js"></script>
 </body>

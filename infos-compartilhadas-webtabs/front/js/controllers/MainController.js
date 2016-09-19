@@ -1,7 +1,4 @@
-var app = angular.module('App', []);
-
 (function () {
-    'use strict';
     app.controller('MainController', ['$scope', function ($scope) {
 
         var self = this;
@@ -9,7 +6,7 @@ var app = angular.module('App', []);
         /**
          * Abre uma nova aba no endereço inicial e faz ela ficar em foco.
          */
-        this.popUp = function () {
+        this.newTab = function () {
             var win = window.open('/', '');
             win.focus();
         };
@@ -41,7 +38,7 @@ var app = angular.module('App', []);
             window.addEventListener("beforeunload", function (e) {
                 cache.setItem("segurandoConexao", "false");
             });
-            alert("segurando conexao");
+            // alert("segurando conexao");
         }
 
         /**
@@ -83,5 +80,6 @@ var app = angular.module('App', []);
                 }
             });
         })();
-    }]);
+    }]
+    )
 } ())
