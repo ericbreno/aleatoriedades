@@ -8,7 +8,7 @@
             <div ng-repeat="linha in controller.tab">
                 <div class="col-md-4">
                     <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="casa">
-                        <div ng-if="!pos.cor" class="glyphicon glyphicon-remove" style="background-color: grey"></div>
+                        <div ng-if="!pos.cor" style="background-color: grey"></div>
                         <div ng-if="pos.cor === 'branco'" style="background-color: white"></div>
                         <div ng-if="pos.cor === 'preto'" style="background-color: black"></div>
                     </div>
