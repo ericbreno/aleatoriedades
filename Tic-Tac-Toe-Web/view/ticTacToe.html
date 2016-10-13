@@ -1,16 +1,16 @@
 <div ng-controller="TicTacToeController as controller" class="col-md-12 tic-tac">
-    <h2 class="text-center"> Damas </h2>
-    <h3 class="text-center" ng-bind="jogadorDaVez"></h3>
+    <h2 class="text-center"> Jogo da Velha </h2>
+    <h3 class="text-center" ng-bind="infoJogo"></h3>
     <h4 class="text-center text-danger" ng-bind="erro"></h4>
     <!-- tabuleiro -->
     <div class="col-md-12">
         <div class="col-md-4 col-md-offset-4">
             <div ng-repeat="linha in controller.tab">
                 <div class="col-md-4">
-                    <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="casa">
-                        <div ng-if="!pos.cor" style="background-color: grey"></div>
-                        <div ng-if="pos.cor === 'branco'" style="background-color: white"></div>
-                        <div ng-if="pos.cor === 'preto'" style="background-color: black"></div>
+                    <div ng-repeat="pos in linha" 
+                         ng-click="controller.realizarJogada(pos)" 
+                         class="casa" 
+                         tic-tac peca="pos.peca">
                     </div>
                 </div>
             </div>

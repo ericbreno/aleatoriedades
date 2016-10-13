@@ -1,6 +1,6 @@
 (function () {
     /**
-     * Diretiva relacionada ao jogo de damas.
+     * Diretiva relacionada ao jogo da velha.
      * 
      * @author Eric Breno - 12/10/2016
      */

@@ -1,6 +1,6 @@
 (function () {
     /**
-     * Controller que gerencia o jogo de damas.
+     * Controller que gerencia o jogo da velha.
      * 
      * @author Eric Breno - 12/10/2016
      */
@@ -14,9 +14,9 @@
         var LIMITE_JOGADAS = 9;
 
         /**
-         * Indica se é a vez do branco jogar.
+         * Indica se é a vez do X jogar.
          */
-        this.branco = false;
+        this.vezX = false;
 
         /**
          * Indicador se o jogo está finalizado, ou seja, não podem
@@ -34,7 +34,7 @@
          */
         function Casa() {
             return {
-                cor: undefined
+                peca: undefined
             };
         };
 
@@ -51,12 +51,12 @@
          */
         this.realizarJogada = function (casa) {
             if (!self.finalizado) {
-                if (casa.cor || casa.cor == 'branco' && self.branco || casa.cor == 'preto' && !self.branco) {
+                if (casa.peca || casa.peca === 'X' && self.vezX || casa.peca === 'O' && !self.vezX) {
                     $scope.erro = "Você deve escolher uma casa válida";
                 } else {
                     $scope.erro = "";
                     marcarCasa(casa);
-                    self.branco = !self.branco;
+                    self.vezX = !self.vezX;
                     jogadas++;
                     attStatus();
                 }
@@ -69,10 +69,10 @@
          * @param casa Casa a ser marcada.
          */
         function marcarCasa(casa) {
-            if (self.branco) {
-                casa.cor = 'branco';
+            if (self.vezX) {
+                casa.peca = 'X';
             } else {
-                casa.cor = 'preto';
+                casa.peca = 'O';
             }
         }
 
@@ -83,11 +83,11 @@
         function attStatus() {
             self.finalizado = temVencedor() || jogadas === LIMITE_JOGADAS;
             if (!self.finalizado) {
-                $scope.jogadorDaVez = "Vez do jogador ".concat(self.branco ? "branco" : "preto");
-            } else if (jogadas === LIMITE_JOGADAS) {
+                $scope.infoJogo = "Vez do jogador ".concat(self.vezX ? "X" : "O");
+            } else if (jogadas === LIMITE_JOGADAS && !temVencedor()) {
                 $scope.erro = "Jogo empatado. Clique em resetar";
             } else {
-                $scope.jogadorDaVez = "Fim de jogo, ".concat(self.branco ? "preto" : "branco").concat(" venceu!");
+                $scope.infoJogo = "Fim de jogo, ".concat(self.vezX ? "O" : "X").concat(" venceu!");
             }
         }
 
@@ -107,8 +107,8 @@
          */
         function verificaDiagonais() {
             var t = self.tab;
-            return (t[0][0].cor === t[1][1].cor && t[0][0].cor === t[2][2].cor) && t[0][0].cor
-                || (t[0][2].cor === t[1][1].cor && t[0][2].cor === t[2][0].cor) && t[0][2].cor;
+            return (t[0][0].peca === t[1][1].peca && t[0][0].peca === t[2][2].peca) && t[0][0].peca
+                || (t[0][2].peca === t[1][1].peca && t[0][2].peca === t[2][0].peca) && t[0][2].peca;
         }
 
         /**
@@ -118,7 +118,7 @@
          */
         function verificaColuna(coluna) {
             var t = self.tab;
-            return t[0][coluna].cor === t[2][coluna].cor && t[1][coluna].cor === t[2][coluna].cor && t[0][coluna].cor;
+            return t[0][coluna].peca === t[2][coluna].peca && t[1][coluna].peca === t[2][coluna].peca && t[0][coluna].peca;
         }
 
         /**
@@ -128,21 +128,18 @@
          */
         function verificaLinha(linha) {
             var t = self.tab;
-            return t[linha][0].cor === t[linha][1].cor && t[linha][0].cor === t[linha][2].cor && t[linha][0].cor;
+            return t[linha][0].peca === t[linha][1].peca && t[linha][0].peca === t[linha][2].peca && t[linha][0].peca;
         }
 
         /**
          * Limpa o tabuleiro, zera as jogadas e limpa a mensagem de erro.
          */
         this.resetar = function () {
-            self.tab = [];
-            for (var i = 0; i < 3; i++) {
-                var linha = [];
-                for (var j = 0; j < 3; j++) {
-                    linha.push(new Casa());
-                }
-                self.tab.push(linha);
-            }
+            self.tab.forEach(function(linha){
+                linha.forEach(function(elemento){
+                    elemento.peca = "";
+                });
+            });
             $scope.erro = "";
             jogadas = 0;
             attStatus();
@@ -152,7 +149,14 @@
          * Função inicial.
          */
         (function () {
-            self.resetar();
+            for (var i = 0; i < 3; i++) {
+                var linha = [];
+                for (var j = 0; j < 3; j++) {
+                    linha.push(new Casa());
+                }
+                self.tab.push(linha);
+            }
+            attStatus();
         })();
     }]);
 } ())

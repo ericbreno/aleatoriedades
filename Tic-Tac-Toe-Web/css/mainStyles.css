@@ -1,3 +1,7 @@
+html, body {
+    height: 100%;
+}
+
 .body-principal {
     background-color: black;
     height: 100%;
@@ -5,18 +9,19 @@
 
 .tic-tac {
     background-color: lightgray;
+    height: 100%;
 }
 
 .casa {
     height: 110px;
-    width: 100%px;
+    width: 110px;
     margin: 10px auto;
-    background-color: yellow;
+    background-color: grey;
 }
 
 .casa div {
     height: 110px;
-    width: 100%;
+    width: 110px;
     border-radius: 55px;
 }
 
@@ -31,4 +36,18 @@
     width: 20%;
     margin-left: 40%;
     margin-right: 40%;
+}
+
+.peca-x {
+    /*background-color: black;*/
+    font-size: 75px;
+}
+
+.peca-o {
+    /*background-color: white;*/
+    font-size: 75px;
+}
+
+.peca-limpa {
+    background-color: grey;
 }
