@@ -1,0 +1,34 @@
+.body-principal {
+    background-color: black;
+    height: 100%;
+}
+
+.tic-tac {
+    background-color: lightgray;
+}
+
+.casa {
+    height: 110px;
+    width: 100%px;
+    margin: 10px auto;
+    background-color: yellow;
+}
+
+.casa div {
+    height: 110px;
+    width: 100%;
+    border-radius: 55px;
+}
+
+.debug {
+    background-color: black;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+.botao {
+    margin: auto;
+    width: 20%;
+    margin-left: 40%;
+    margin-right: 40%;
+}
