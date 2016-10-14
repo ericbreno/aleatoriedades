@@ -33,6 +33,7 @@ html, body {
 
 .botao {
     margin: auto;
+    margin-top: 20px;
     width: 20%;
     margin-left: 40%;
     margin-right: 40%;

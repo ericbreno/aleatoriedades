@@ -4,9 +4,19 @@
      * 
      * @author Eric Breno - 12/10/2016
      */
-    app.controller('TicTacToeController', ['$scope', function ($scope) {
+    app.controller('TicTacToeController', ['$scope', 'BotTicTacService', function ($scope, BotTicTacService) {
 
         var self = this;
+
+        var SINGLE_PLAYER = "Player vs Bot";
+
+        var DUO_PLAYER = "Player vs Player";
+
+        var PRIMEIRA_MUDANCA = true;
+
+        var X = 'X';
+
+        var O = 'O';
 
         /**
          * Limite máximo de jogadas que podem ocorrer no jogo.
@@ -16,7 +26,7 @@
         /**
          * Indica se é a vez do X jogar.
          */
-        this.vezX = false;
+        this.vezX = true;
 
         /**
          * Indicador se o jogo está finalizado, ou seja, não podem
@@ -51,7 +61,7 @@
          */
         this.realizarJogada = function (casa) {
             if (!self.finalizado) {
-                if (casa.peca || casa.peca === 'X' && self.vezX || casa.peca === 'O' && !self.vezX) {
+                if (casa.peca || casa.peca === X && self.vezX || casa.peca === O && !self.vezX) {
                     $scope.erro = "Você deve escolher uma casa válida";
                 } else {
                     $scope.erro = "";
@@ -59,6 +69,9 @@
                     self.vezX = !self.vezX;
                     jogadas++;
                     attStatus();
+                }
+                if ($scope.modoJogo === SINGLE_PLAYER && !self.vezX && !self.finalizado) {
+                    BotTicTacService.jogar();
                 }
             }
         };
@@ -70,9 +83,9 @@
          */
         function marcarCasa(casa) {
             if (self.vezX) {
-                casa.peca = 'X';
+                casa.peca = X;
             } else {
-                casa.peca = 'O';
+                casa.peca = O;
             }
         }
 
@@ -83,11 +96,11 @@
         function attStatus() {
             self.finalizado = temVencedor() || jogadas === LIMITE_JOGADAS;
             if (!self.finalizado) {
-                $scope.infoJogo = "Vez do jogador ".concat(self.vezX ? "X" : "O");
+                $scope.infoJogo = "Vez do jogador ".concat(self.vezX ? X : O);
             } else if (jogadas === LIMITE_JOGADAS && !temVencedor()) {
                 $scope.erro = "Jogo empatado. Clique em resetar";
             } else {
-                $scope.infoJogo = "Fim de jogo, ".concat(self.vezX ? "O" : "X").concat(" venceu!");
+                $scope.infoJogo = "Fim de jogo, ".concat(self.vezX ? O : X).concat(" venceu!");
             }
         }
 
@@ -137,12 +150,34 @@
         this.resetar = function () {
             self.tab.forEach(function(linha){
                 linha.forEach(function(elemento){
-                    elemento.peca = "";
+                    elemento.peca = undefined;
                 });
             });
+            if ($scope.modoJogo === SINGLE_PLAYER) {
+                self.vezX = true;
+            }
             $scope.erro = "";
             jogadas = 0;
             attStatus();
+        };
+
+        /**
+         * Altera o tipo de jogo de single player para duo player
+         * e vice versa.
+         */
+        this.mudarTipoJogo = function(){
+            if (PRIMEIRA_MUDANCA) {
+                alert("Ao alterar o modo de jogo o tabuleiro é resetado.");
+                PRIMEIRA_MUDANCA = false;
+                return;
+            }
+            if ($scope.modoJogo === DUO_PLAYER) {
+                $scope.modoJogo = SINGLE_PLAYER;
+            } else {
+                $scope.modoJogo = DUO_PLAYER;
+            }
+            self.vezX = true;
+            self.resetar();
         };
 
         /**
@@ -157,6 +192,8 @@
                 self.tab.push(linha);
             }
             attStatus();
+            $scope.modoJogo = SINGLE_PLAYER;
+            BotTicTacService.controller = self;
         })();
     }]);
 } ())
