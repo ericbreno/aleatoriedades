@@ -134,14 +134,13 @@
             for (; ;) {
                 var i = Math.floor((Math.random() * 20));
                 var linha = self.controller.tab[i % 3];
-                for (; ;) {
-                    var j = Math.floor((Math.random() * 20));
-                    var casa = linha[j % 3];
-                    if (typeof (casa.peca) === 'undefined') {
-                        return casa;
-                    }
+                var j = Math.floor((Math.random() * 20));
+                var casa = linha[j % 3];
+                if (typeof (casa.peca) === 'undefined') {
+                    return casa;
                 }
             }
         }
+
     }])
 } ())
