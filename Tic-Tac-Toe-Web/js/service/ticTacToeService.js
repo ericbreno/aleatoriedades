@@ -12,6 +12,11 @@
         var LIMITE_JOGADAS = 9;
 
         /**
+         * Indica se está no modo contra o bot.
+         */
+        this.vsBot = true;
+
+        /**
          * Indica se é a vez do X jogar.
          */
         this.vezX = true;
@@ -98,7 +103,14 @@
                 return "Fim de jogo, ".concat(self.vezX ? O : X).concat(" venceu!");
             }
             return !self.vezX ? "Você venceu!" : "Voce perdeu!";
-        }
+        };
+
+        /**
+         * Muda o tipo de jogo para bot ou duo player.
+         */
+        this.mudaTipoJogo = function() {
+            self.vsBot = !self.vsBot;
+        };
 
         /**
          * Informa se existe um vencedor para o jogo.

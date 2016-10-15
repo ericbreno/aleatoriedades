@@ -1,18 +1,14 @@
-<div ng-controller="TicTacToeController as controller" class="col-md-12 tic-tac">
+<div ng-controller="TicTacToeController as controller" class="col-xs-12 tic-tac">
     <h2 class="text-center"> Jogo da Velha </h2>
     <h3 class="text-center" ng-bind="modoJogo"></h3>
     <h3 class="text-center" ng-bind="infoJogo"></h3>
     <h4 class="text-center text-danger" ng-bind="erro"></h4>
     <!-- tabuleiro -->
-    <div class="col-md-12">
-        <div class="col-md-4 col-md-offset-4">
-            <div ng-repeat="linha in controller.getTab()">
-                <div class="col-md-4">
-                    <div ng-repeat="pos in linha" 
-                         ng-click="controller.realizarJogada(pos)" 
-                         class="casa" 
-                         tic-tac peca="pos.peca">
-                    </div>
+    <div class="col-xs-12 area-tabuleiro">
+        <div class="col-xs-4 col-xs-offset-4 tabuleiro">
+            <div ng-repeat="linha in controller.getTab()" class="col-xs-4 linha">
+                <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="col-xs-4 sub-linha">
+                    <div class="text-center peca">{{ pos.peca }}</div>
                 </div>
             </div>
         </div>

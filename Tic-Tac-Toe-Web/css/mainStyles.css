@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -12,43 +13,53 @@ html, body {
     height: 100%;
 }
 
-.casa {
-    height: 110px;
-    width: 110px;
-    margin: 10px auto;
-    background-color: grey;
+.area-tabuleiro {
+    height: 50%;
+    width: 100%;
 }
 
-.casa div {
-    height: 110px;
-    width: 110px;
-    border-radius: 55px;
+.tabuleiro {
+    height: 100%;
+    width: 33%;
+    min-width: 200px;
+}
+
+.linha {
+    height: 31%;
+    width: 100%;
+    margin-top: 3%;
+}
+
+.sub-linha {
+    height: 100%;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+.casa {
+    height: 100%;
+    width: 100%;
+}
+
+.peca {
+    font-size: 6vw;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    background-color: grey;
 }
 
 .debug {
     background-color: black;
-    min-height: 30px;
-    min-width: 30px;
+    height: 100%;
+    width: 100%;
 }
 
 .botao {
     margin: auto;
-    margin-top: 20px;
+    margin-top: 2%;
     width: 20%;
+    min-width: 110px;
     margin-left: 40%;
     margin-right: 40%;
-}
-
-.peca-x {
-    /*background-color: black;*/
-    font-size: 75px;
-}
-
-.peca-o {
-    /*background-color: white;*/
-    font-size: 75px;
-}
-
-.peca-limpa {
-    background-color: grey;
 }

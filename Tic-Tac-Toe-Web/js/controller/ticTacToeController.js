@@ -15,11 +15,6 @@
         var PRIMEIRA_MUDANCA = true;
 
         /**
-         * Indica se está no modo contra o bot.
-         */
-        this.vsBot = true;
-
-        /**
          * Realiza a jogada na casa selecionada, marcando de acordo 
          * com o jogador da vez.
          * 
@@ -33,7 +28,7 @@
                 } else {
                     $scope.erro = "Você deve escolher uma casa válida";
                 }
-                if (self.vsBot && !TicTacToeService.vezX && !self.isFinalizado()) {
+                if (vsBot() && !TicTacToeService.vezX && !self.isFinalizado()) {
                     casa = BotTicTacService.jogar(self.getTab());
                     TicTacToeService.jogar(casa);
                     $scope.infoJogo = TicTacToeService.attStatus();
@@ -47,7 +42,7 @@
         this.resetar = function () {
             $scope.infoJogo = TicTacToeService.resetar();
             $scope.erro = "";
-            if (self.vsBot) {
+            if (vsBot()) {
                 TicTacToeService.vezX = true;
             }
         };
@@ -62,14 +57,14 @@
                 PRIMEIRA_MUDANCA = false;
                 return;
             }
-            if (self.vsBot) {
+            if (vsBot()) {
                 $scope.modoJogo = DUO_PLAYER;
             } else {
                 $scope.modoJogo = SINGLE_PLAYER;
             }
             TicTacToeService.vezX = true;
             self.resetar();
-            self.vsBot = !self.vsBot;
+            TicTacToeService.mudaTipoJogo();
         };
 
         /**
@@ -89,11 +84,18 @@
         };
 
         /**
+         * Indica se o jogo é contra o bot.
+         * @return True se o jogo for contra o bot.
+         */
+        function vsBot() {
+            return TicTacToeService.vsBot; 
+        }
+
+        /**
          * Função inicial.
          */
         (function () {
             $scope.modoJogo = SINGLE_PLAYER;
-            BotTicTacService.controller = self;
             $scope.infoJogo = TicTacToeService.attStatus();
         })();
     }]);
