@@ -9,16 +9,17 @@
 
         var O = 'O';
 
-        this.controller;
+        this.tab;
 
         /**
          * Realiza uma jogada, verificando as condições atuais do tabuleiro.
          */
-        this.jogar = function () {
+        this.jogar = function (tab) {
+            self.tab = tab;
             var casa = podeVencerLinhas() || podeVencerColunas() || podeVencerDiagonais()
                 || podePerderLinhas() || podePerderColunas() || podePerderDiagonais()
                 || jogaAleatorio();
-            self.controller.realizarJogada(casa);
+            return casa;
         };
 
         /**
@@ -27,7 +28,7 @@
          */
         function podePerderLinhas() {
             for (var i = 0; i < 3; i++) {
-                var casa = podePerderLinha(self.controller.tab[i]);
+                var casa = podePerderLinha(getTab()[i]);
                 if (typeof (casa) !== 'undefined') {
                     return casa;
                 }
@@ -64,9 +65,16 @@
          * retorna a casa para ser jogada em.
          */
         function podePerderDiagonais() {
-            var d1 = [self.controller.tab[0][0], self.controller.tab[1][1], self.controller.tab[2][2]];
-            var d2 = [self.controller.tab[2][0], self.controller.tab[1][1], self.controller.tab[0][2]];;
+            var d1 = [getTab()[0][0], getTab()[1][1], getTab()[2][2]];
+            var d2 = [getTab()[2][0], getTab()[1][1], getTab()[0][2]];;
             return podePerderLinha(d1) || podePerderLinha(d2);
+        }
+
+        /**
+         * Recupera o tabuleiro.
+         */
+        function getTab() {
+            return self.tab;
         }
 
         /**
@@ -75,7 +83,7 @@
          */
         function podeVencerLinhas() {
             for (var i = 0; i < 3; i++) {
-                var casa = podeVencerLinha(self.controller.tab[i]);
+                var casa = podeVencerLinha(getTab()[i]);
                 if (typeof (casa) !== 'undefined') {
                     return casa;
                 }
@@ -100,8 +108,8 @@
          * diagonais, então retorna a casa que deve ser marcada.
          */
         function podeVencerDiagonais() {
-            var d1 = [self.controller.tab[0][0], self.controller.tab[1][1], self.controller.tab[2][2]];
-            var d2 = [self.controller.tab[2][0], self.controller.tab[1][1], self.controller.tab[0][2]];;
+            var d1 = [getTab()[0][0], getTab()[1][1], getTab()[2][2]];
+            var d2 = [getTab()[2][0], getTab()[1][1], getTab()[0][2]];;
             return podeVencerLinha(d1) || podeVencerLinha(d2);
         }
 
@@ -122,7 +130,7 @@
         function colunaComoLinha(coluna) {
             var elems = [];
             for (var i = 0; i < 3; i++) {
-                elems.push(self.controller.tab[i][coluna]);
+                elems.push(getTab()[i][coluna]);
             }
             return elems;
         }
@@ -133,7 +141,7 @@
         function jogaAleatorio() {
             for (; ;) {
                 var i = Math.floor((Math.random() * 20));
-                var linha = self.controller.tab[i % 3];
+                var linha = getTab()[i % 3];
                 var j = Math.floor((Math.random() * 20));
                 var casa = linha[j % 3];
                 if (typeof (casa.peca) === 'undefined') {
