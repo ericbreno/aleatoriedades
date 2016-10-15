@@ -3,11 +3,12 @@ body {
     margin:0px auto; 
     width:100%;
     height: 100%;
+    background-color: black;
 }
 
 .body-principal {
-    background-color: black;
-    height: 100%;
+    height: 97%;
+    width: 100%;
 }
 
 .tic-tac {
