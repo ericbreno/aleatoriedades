@@ -1,5 +1,5 @@
 <div ng-controller="TicTacToeController as controller" class="col-xs-12 tic-tac">
-    <h2 class="text-center"> Jogo da Velha </h2>
+    <h1 id="titulo-principal" class="text-center"> Jogo da Velha </h1>
     <h3 class="text-center" ng-bind="modoJogo"></h3>
     <h3 class="text-center" ng-bind="infoJogo"></h3>
     <h4 class="text-center text-danger" ng-bind="erro"></h4>
@@ -14,6 +14,8 @@
         </div>
     </div>
     <!-- Botão para limpar tabuleiro -->
-    <button class="btn btn-info botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
-    <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
+    <div class="col-xs-12">
+        <button class="btn btn-info botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
+        <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
+    </div>
 </div>
