@@ -6,7 +6,7 @@
     <!-- tabuleiro -->
     <div class="col-xs-12 area-tabuleiro">
         <div class="tabuleiro">
-            <div ng-repeat="linha in controller.getTab()" class="col-xs-4 linha">
+            <div ng-repeat="linha in controller.getTab()" class="col-xs-12 linha">
                 <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="col-xs-4 sub-linha">
                     <div class="text-center peca">{{ pos.peca }}</div>
                 </div>

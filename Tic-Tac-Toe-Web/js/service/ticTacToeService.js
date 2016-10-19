@@ -35,9 +35,11 @@
         /**
          * Objeto que representa as casas do tabuleiro.
          */
-        function Casa() {
+        function Casa(x, y) {
             return {
-                peca: undefined
+                peca: undefined,
+                x: x,
+                y: y
             };
         };
 
@@ -159,7 +161,7 @@
             for (var i = 0; i < 3; i++) {
                 var linha = [];
                 for (var j = 0; j < 3; j++) {
-                    linha.push(new Casa());
+                    linha.push(new Casa(i, j));
                 }
                 self.tab.push(linha);
             }

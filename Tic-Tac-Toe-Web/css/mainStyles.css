@@ -1,7 +1,7 @@
 html,
 body {
-    margin:0px auto; 
-    width:100%;
+    margin: 0px auto;
+    width: 100%;
     height: 100%;
     background-color: black;
 }
@@ -27,27 +27,45 @@ body {
     width: 100%;
     padding: 0px;
     margin-bottom: 2%;
+    /*background-color: blue;*/
 }
 
 .tabuleiro {
     height: 100%;
-    width: 34%;
+    width: 33%;
     min-width: 300px;
-    padding: 0% 3%;
+    padding: 0;
     margin: 0 auto;
     float: none;
+    /*background-color: lightcoral;*/
+}
+
+@media only screen and (max-device-width: 650px) {
+    .tabuleiro {
+        height: 100%;
+        width: 90%;
+        min-width: 300px;
+        padding: 0;
+        margin: 0 auto;
+        float: none;
+        /*background-color: mediumpurple;*/
+    }
 }
 
 .linha {
     height: 31%;
     width: 100%;
-    margin-top: 3%;
+    min-width: 300px;
+    /*background-color: black;*/
+    margin-top: 2%;
+    padding: 0px;
 }
 
 .sub-linha {
     height: 100%;
     padding-left: 1%;
     padding-right: 1%;
+    /*background-color: purple;*/
 }
 
 .casa {
