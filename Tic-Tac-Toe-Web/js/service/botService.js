@@ -15,6 +15,8 @@
 
         var PECA_JOGADA = {};
 
+        var ULTIMA_JOGADA;
+
         this.tab;
 
         /**
@@ -30,16 +32,16 @@
                 PECA_ADV = peca === 'X' ? 'O' : 'X';
             }
             self.tab = tab;
-            if (PRIMEIRA_JOGADA) {
-                isTabVazio();
-            }
-            var casa = jogarParaVencer()
-                || jogarParaNaoPerder()
-                || armarJogada()
-                || primeiraJogada()
-                || jogaAleatorio();
+            isTabVazio();
+            var a = jogarParaVencer(),
+                b = jogarParaNaoPerder(),
+                c = armarJogada(),
+                d = primeiraJogada(),
+                e = jogaAleatorio();
+            var casa = a || b || c || d || e;
             PRIMEIRA_JOGADA = false;
             IS_TAB_VAZIO = false;
+            ULTIMA_JOGADA = casa;
             return casa;
         };
 
@@ -185,7 +187,9 @@
          * a casa que deve ser jogada.
          */
         function armarJogada() {
-            return armarDoisLugares() || armarUmLugar();
+            var a = armarDoisLugares();
+            var b = armarUmLugar();
+            return a || b;
         }
 
         /**
@@ -261,22 +265,48 @@
          */
         function decidirEntrePossiveisArmar(possiveis) {
             var armandoTipoUm = oponenteArmandoUm();
+            var armandoTipoDois = oponenteArmandoDois();
             var fechouTipoUm = oponenteFechouTipoUm();
             var existeMelhorOpcao = possiveis.length > 1
                 && armandoTipoUm
-                && ((possiveis[1].x === 2 || possiveis[1].x === 0) && (possiveis[1].y === 2 || possiveis[1].y === 0));
-            if (fechouTipoUm && isUndf(getTab()[1][1].peca)) {
+                && ((possiveis[1].x === 2 || possiveis[1].x === 0) && (possiveis[1].y === 2 || possiveis[1].y === 0))
+                && (ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y);
+            if ((fechouTipoUm || armandoTipoDois) && isUndf(getTab()[1][1].peca)) {
                 return getTab()[1][1];
+            }
+            if (armandoTipoDois) {
+                return desarmarTipoDois();
             }
             if (existeMelhorOpcao) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
             }
             var podeNaoJogarMeio = possiveis.length > 1
                 && possiveis[0].x === possiveis[0].y && possiveis[0].x === 1;
-            if (podeNaoJogarMeio && armandoTipoUm) {
+
+            if (podeNaoJogarMeio && armandoTipoUm && ((ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y))) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
             } else if (!armandoTipoUm) {
                 return getTab()[possiveis[0].x][possiveis[0].y];
+            }
+        }
+
+        function desarmarJogadas() {
+
+        }
+
+        function desarmarTipoDois() {
+            var t = getTab();
+            if (t[0][0].peca === PECA_ADV) {
+                return t[1][2].peca === PECA_ADV ? t[0][2] : t[2][0];
+            }
+            if (t[0][2].peca === PECA_ADV) {
+                return t[1][0].peca === PECA_ADV ? t[0][0] : t[2][2];
+            }
+            if (t[2][2].peca === PECA_ADV) {
+                return t[1][0].peca === PECA_ADV ? t[2][0] : t[0][2];
+            }
+            if (t[2][0].peca === PECA_ADV) {
+                return t[1][2].peca === PECA_ADV ? t[2][2] : t[0][0];
             }
         }
 
@@ -292,6 +322,22 @@
             var t = getTab();
             return (t[0][1].peca === PECA_ADV || t[2][1].peca === PECA_ADV)
                 && (t[1][0].peca === PECA_ADV || t[1][2].peca === PECA_ADV);
+        }
+
+        /**
+         * Verifica se o adversário está armando uma jogada com peças
+         * no tipo:
+         * - X -
+         * - - -
+         * X - -
+         * ou qualquer variante.
+         */
+        function oponenteArmandoDois() {
+            var t = getTab();
+            return t[0][0].peca === PECA_ADV && (t[1][2].peca === PECA_ADV || t[2][1].peca === PECA_ADV)
+                || t[2][0].peca === PECA_ADV && (t[1][2].peca === PECA_ADV || t[0][1].peca === PECA_ADV)
+                || t[0][2].peca === PECA_ADV && (t[1][0].peca === PECA_ADV || t[2][1].peca === PECA_ADV)
+                || t[2][2].peca === PECA_ADV && (t[1][0].peca === PECA_ADV || t[0][1].peca === PECA_ADV);
         }
 
         /**
@@ -380,8 +426,14 @@
                     var pos = vsQuina[PECA_JOGADA.x][PECA_JOGADA.y];
                     return getTab()[pos[0]][pos[1]];
                 }
-                var i = Math.random() > 0.5 ? 0 : 2,
-                    j = Math.random() > 0.5 ? 0 : 2;
+                var i, j;
+                if (PECA_JOGADA.x === 0 || PECA_JOGADA.x === 2) {
+                    i = PECA_JOGADA.x;
+                    j = vPos(PECA_JOGADA.y)[0];
+                } else if (PECA_JOGADA.y === 0 || PECA_JOGADA.y === 2) {
+                    i = vPos(PECA_JOGADA.x)[0];
+                    j = PECA_JOGADA.y;
+                }
                 return getTab()[i][j];
             }
         }
@@ -391,16 +443,18 @@
          */
         function isTabVazio() {
             IS_TAB_VAZIO = true;
+            var preenchidas = 0;
             for (var i = 0; i < 3; i++) {
                 for (var j = 0; j < 3; j++) {
                     var peca = getTab()[i][j];
                     if (!isUndf(peca.peca)) {
                         PECA_JOGADA = peca;
+                        preenchidas++;
                         IS_TAB_VAZIO = false;
-                        return;
                     }
                 }
             }
+            PRIMEIRA_JOGADA = preenchidas <= 1;
         }
 
         /**
