@@ -430,11 +430,12 @@
                 if (PECA_JOGADA.x === 0 || PECA_JOGADA.x === 2) {
                     i = PECA_JOGADA.x;
                     j = vPos(PECA_JOGADA.y)[0];
+                    return getTab()[i][j];
                 } else if (PECA_JOGADA.y === 0 || PECA_JOGADA.y === 2) {
                     i = vPos(PECA_JOGADA.x)[0];
                     j = PECA_JOGADA.y;
+                    return getTab()[i][j];
                 }
-                return getTab()[i][j];
             }
         }
 
