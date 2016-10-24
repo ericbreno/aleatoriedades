@@ -70,7 +70,7 @@
             self.tab.forEach(function (linha) {
                 linha.forEach(function (elemento) {
                     elemento.peca = undefined;
-                    elemento.n = undefined;  
+                    elemento.n = undefined;
                 });
             });
             jogadas = 0;
@@ -96,13 +96,13 @@
          */
         this.attStatus = function () {
             self.finalizado = temVencedor() || jogadas === LIMITE_JOGADAS;
-            if (!self.finalizado) {
+            if (!self.finalizado && !self.vsBot) {
                 return "Vez do jogador ".concat(self.vezX ? X : O);
-            }
-            if (jogadas === LIMITE_JOGADAS && !temVencedor()) {
+            } else if (!self.finalizado) {
+                return "Sua vez de jogar.";
+            } else if (jogadas === LIMITE_JOGADAS && !temVencedor()) {
                 return "Jogo empatado. Clique em resetar";
-            }
-            if (!self.vsBot) {
+            } else if (!self.vsBot) {
                 return "Fim de jogo, ".concat(self.vezX ? O : X).concat(" venceu!");
             }
             return !self.vezX ? "Você venceu!" : "Voce perdeu!";
@@ -111,7 +111,7 @@
         /**
          * Muda o tipo de jogo para bot ou duo player.
          */
-        this.mudaTipoJogo = function() {
+        this.mudaTipoJogo = function () {
             self.vsBot = !self.vsBot;
         };
 

@@ -9,14 +9,26 @@
 
         var PECA_BOT = 'O';
 
+        /** 
+         * Indica se é a primeira jogada do bot.
+         */
         var PRIMEIRA_JOGADA = true;
 
         var IS_TAB_VAZIO = false;
 
+        /**
+         * Peça jogada pelo player. Utilizado apenas para a primeira jogada.
+         */
         var PECA_JOGADA = {};
 
+        /**
+         * Última peça jogada pelo bot.
+         */
         var ULTIMA_JOGADA;
 
+        /**
+         * Nível de dificuldade do bot.
+         */
         var dificuldade;
 
         this.tab;
@@ -33,7 +45,7 @@
          * Verifica as condições atuais do tabuleiro e decide em
          * qual casa deve se realizar a jogada, então a retorna.
          * @param tab Tabuleiro do jogo.
-         * @param peca Peca que está jogando.
+         * @param peca Peca que o bot está jogando.
          * @return Casa em que se deve realizar a jogada.
          */
         this.jogar = function (tab, peca) {
@@ -207,7 +219,10 @@
          * a casa que deve ser jogada.
          */
         function armarJogada() {
-            return armarDoisLugares() || armarUmLugar();
+            var a = armarDoisLugares();
+            var b = armarUmLugar();
+            console.log("armar", b, a);
+            return a || b;
         }
 
         /**
@@ -284,20 +299,26 @@
         function decidirEntrePossiveisArmar(possiveis) {
             var armandoTipoUm = oponenteArmandoUm();
             var armandoTipoDois = oponenteArmandoDois();
+            var armandoTipoTres = oponenteArmandoTres();
             var fechouTipoUm = oponenteFechouTipoUm();
             var jogarNaSegundaOpcao = possiveis.length > 1
                 && armandoTipoUm
-                && ((possiveis[1].x === 2 || possiveis[1].x === 0) && (possiveis[1].y === 2 || possiveis[1].y === 0))
-                && (ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y);
+                && isQuina(possiveis[1]) // preferível se jogar em quinas
+                && (ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y); // não jogar em diagonal
             var temMeioJogarLado = possiveis.length > 1
                 && getTab()[1][1].peca === PECA_BOT
-                && !isQuina(possiveis[0]);
+                && isQuina(possiveis[1]);
+            // Caso o jogador tenha fechado minha peça na quina ou esteja armando no tipo
+            // dois e o meio não esteja marcado
             if ((fechouTipoUm || armandoTipoDois) && isUndf(getTab()[1][1].peca)) {
                 return getTab()[1][1];
             }
+            // Se ele estiver armando do tipo um mas não tiver fechado minha peça no canto.
             if (armandoTipoUm) {
                 return desarmarTipoUm();
             }
+            // Se estiver armando do tipo dois, jogar na quina que fecha a jogada e força
+            // ele a me bloquear.
             if (armandoTipoDois) {
                 return desarmarTipoDois();
             }
@@ -308,10 +329,13 @@
             }
             var podeNaoJogarMeio = possiveis.length > 1
                 && possiveis[0].x === possiveis[0].y && possiveis[0].x === 1;
-
-            if (podeNaoJogarMeio && armandoTipoUm && ((ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y))) {
+            var emDiagonalComUltima = ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y;
+            // Se for possível não jogar no meio (com a segunda jogada), apenas jogará se estiver
+            // armando do tipo um e a segunda jogada não estiver na diagonal com a última peça jogada. 
+            if (podeNaoJogarMeio && armandoTipoUm && emDiagonalComUltima) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
-            } else if (!armandoTipoUm && !isQuina(possiveis[0])) {
+            // Se estiver armando do tipo três e a peça a ser jogada não estiver na quina.
+            } else if (armandoTipoTres && !isQuina(possiveis[0])) {
                 return getTab()[possiveis[0].x][possiveis[0].y];
             }
         }
@@ -321,7 +345,8 @@
          * - X -
          * X O -
          * - - -
-         * ou qualquer variante.
+         * ou qualquer variante, jogando na quina cercada por X's,
+         * forçando o jogador e me bloquear.
          */
         function desarmarTipoUm() {
             var t = getTab();
@@ -338,9 +363,10 @@
         /**
          * Desarma quando o tabuleiro está no tipo
          * - X -
-         * - - -
+         * - O -
          * X - -
-         * ou qualquer variante.
+         * ou qualquer variante, jogando na quina ao lado do X,
+         * forçando o jogador a me bloquear.
          */
         function desarmarTipoDois() {
             var t = getTab();
@@ -356,6 +382,21 @@
             if (t[2][0].peca === PECA_ADV) {
                 return t[1][2].peca === PECA_ADV ? t[2][2] : t[0][0];
             }
+        }
+
+        /**
+         * Verifica se o adversário está armando uma jogada com peças
+         * no tipo:
+         * X - -
+         * - O -
+         * - - X
+         * ou qualquer variante, jogando em alguma casa que não seja quina,
+         * forçando o jogador a me bloquear e travando o tabuleiro.
+         */
+        function oponenteArmandoTres() {
+            var t = getTab();
+            return t[0][0].peca === PECA_ADV && t[2][2].peca === PECA_ADV
+                || t[0][2].peca === PECA_ADV && t[2][0].peca === PECA_ADV;
         }
 
         /**
@@ -469,6 +510,7 @@
          */
         function primeiraJogada() {
             if (PRIMEIRA_JOGADA) {
+                console.log("primeira jogada", PECA_JOGADA);
                 var i, j;
                 if (PECA_JOGADA.x === 1 && PECA_JOGADA.y === 1) {
                     i = Math.random() > 0.5 ? 0 : 2;

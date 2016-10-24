@@ -117,11 +117,11 @@
          * Altera o nível de dificuldade do jogo para o próximo.
          */
         this.mudarDificuldade = function () {
-            self.resetar();
+            TicTacToeService.vezX = true;
             self.dificuldade = (self.dificuldade + 1) % 4;
             BotTicTacService.setDificuldade(self.dificuldade);
             $scope.dificuldade = dificuldades[self.dificuldade];
-            TicTacToeService.vezX = true;
+            self.resetar();
         };
 
         /**
@@ -138,7 +138,7 @@
         (function () {
             $scope.modoJogo = SINGLE_PLAYER;
             $scope.infoJogo = TicTacToeService.attStatus();
-            self.dificuldade = 0;
+            self.dificuldade = 3;
             BotTicTacService.setDificuldade(self.dificuldade);
             $scope.dificuldade = dificuldades[self.dificuldade];
         })();
