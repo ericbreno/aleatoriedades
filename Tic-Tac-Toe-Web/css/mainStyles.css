@@ -18,6 +18,7 @@ body {
 .tic-tac {
     background-color: lightgray;
     height: 100%;
+    overflow: auto;
     min-height: 450px;
     padding: 0px;
 }
@@ -85,6 +86,7 @@ body {
     margin: 5px auto;
     display: block;
     font-size: 3vh;
+    overflow: auto;
 }
 
 #footer {

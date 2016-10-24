@@ -17,7 +17,17 @@
 
         var ULTIMA_JOGADA;
 
+        var dificuldade;
+
         this.tab;
+
+        /**
+         * Altera o nível de dificuldade para o passado, valores válidos: 0, 1, 2 e 3.
+         * @param nivel Nivel de dificuldade a ser setado para o bot.
+         */
+        this.setDificuldade = function (nivel) {
+            dificuldade = nivel;
+        };
 
         /**
          * Verifica as condições atuais do tabuleiro e decide em
@@ -39,7 +49,16 @@
                 d = primeiraJogada(),
                 e = jogaAleatorio();
             console.log(a, b, c, d, e);
-            var casa = a || b || c || d || e;
+            var casa;
+            if (dificuldade < 1) {
+                casa = a || b || e;
+            } else if (dificuldade < 2) {
+                casa = a || b || d || e;
+            } else if (dificuldade < 3) {
+                casa = a || b || c || e;
+            } else {
+                casa = a || b || c || d || e;
+            }
             PRIMEIRA_JOGADA = false;
             IS_TAB_VAZIO = false;
             ULTIMA_JOGADA = casa;
@@ -188,9 +207,7 @@
          * a casa que deve ser jogada.
          */
         function armarJogada() {
-            var a = armarDoisLugares();
-            var b = armarUmLugar();
-            return a || b;
+            return armarDoisLugares() || armarUmLugar();
         }
 
         /**
@@ -266,10 +283,9 @@
          */
         function decidirEntrePossiveisArmar(possiveis) {
             var armandoTipoUm = oponenteArmandoUm();
-            console.log("tipoum", armandoTipoUm);
             var armandoTipoDois = oponenteArmandoDois();
             var fechouTipoUm = oponenteFechouTipoUm();
-            var existeMelhorOpcao = possiveis.length > 1
+            var jogarNaSegundaOpcao = possiveis.length > 1
                 && armandoTipoUm
                 && ((possiveis[1].x === 2 || possiveis[1].x === 0) && (possiveis[1].y === 2 || possiveis[1].y === 0))
                 && (ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y);
@@ -279,12 +295,15 @@
             if ((fechouTipoUm || armandoTipoDois) && isUndf(getTab()[1][1].peca)) {
                 return getTab()[1][1];
             }
+            if (armandoTipoUm) {
+                return desarmarTipoUm();
+            }
             if (armandoTipoDois) {
                 return desarmarTipoDois();
             }
             // Caso o bot tenha jogado no meio, é melhor não jogar em quinas 
             // ou caso o jogador esteja armando o tipo 1 e não me prendeu.
-            if (existeMelhorOpcao || temMeioJogarLado) {
+            if (jogarNaSegundaOpcao || temMeioJogarLado) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
             }
             var podeNaoJogarMeio = possiveis.length > 1
@@ -297,10 +316,32 @@
             }
         }
 
-        function desarmarJogadas() {
-
+        /**
+         * Desarma quando o tabuleiro está no tipo
+         * - X -
+         * X O -
+         * - - -
+         * ou qualquer variante.
+         */
+        function desarmarTipoUm() {
+            var t = getTab();
+            var peca;
+            if (t[0][1].peca === PECA_ADV) {
+                peca = t[1][0].peca === PECA_ADV ? t[0][0] : t[0][2];
+            }
+            if (isUndf(peca)) {
+                peca = t[1][0].peca === PECA_ADV ? t[2][0] : t[1][2];
+            }
+            return isUndf(t[peca.x][peca.y].peca) ? peca : null;
         }
 
+        /**
+         * Desarma quando o tabuleiro está no tipo
+         * - X -
+         * - - -
+         * X - -
+         * ou qualquer variante.
+         */
         function desarmarTipoDois() {
             var t = getTab();
             if (t[0][0].peca === PECA_ADV) {
@@ -471,11 +512,21 @@
             return typeof (e) === 'undefined' || e === null;
         }
 
+        /**
+         * Verifica se uma peça está na quina do tabuleiro.
+         * @return True se a peça estiver na quina.
+         */
         function isQuina(peca) {
             return peca.x === 2 && (peca.y === 0 || peca.y === 2)
                 || peca.y === 0 && (peca.x === 0 || peca.x === 2);
         }
 
+        /**
+         * Objeto posição, que guarda uma posição de 2 dimensões x e y.
+         * @param x Posição x.
+         * @param y Posição y.
+         * @return Objeto Posição.
+         */
         function Pos(x, y) {
             return {
                 x: x,

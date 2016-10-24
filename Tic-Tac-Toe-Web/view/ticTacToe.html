@@ -1,5 +1,6 @@
 <div ng-controller="TicTacToeController as controller" class="col-xs-12 tic-tac">
     <h1 id="titulo-principal" class="text-center"> Jogo da Velha </h1>
+    <h3 class="text-center" ng-if="controller.vsBot()" ng-bind="dificuldade"></h3>
     <h3 class="text-center" ng-bind="modoJogo"></h3>
     <h3 class="text-center" ng-bind="infoJogo"></h3>
     <h4 class="text-center text-danger" ng-bind="erro"></h4>
@@ -8,30 +9,21 @@
         <div class="tabuleiro">
             <div ng-repeat="linha in controller.getTab()" class="col-xs-12 linha">
                 <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="col-xs-4 sub-linha">
-                    <div class="text-center peca">{{ pos.peca }}{{ pos.n }}</div>
+                    <div class="text-center peca">{{ pos.peca }}{{ isDebug ? pos.n : "" }}</div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Botão para limpar tabuleiro -->
     <div class="col-xs-12">
-        <button class="btn btn-info botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
+        <button class="btn btn-warning botao" ng-if="controller.isFinalizado()||true" ng-click="controller.resetar()">Resetar</button>
         <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
+        <button class="btn btn-primary botao" ng-click="controller.mudarDificuldade()">Alterar Dificuldade</button>
     </div>
-    <!--<div class="col-xs-12" style="background-color: lightgray">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Jogador</th>
-                    <td>Jogada</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="jogada in controller.getJogadas()">
-                    <th>{{ jogada.player }}</th>
-                    <th>{{ jogada.x }} - {{ jogada.y }}</th>
-                </tr>
-            </tbody>
-        </table>-->
+    <div class="checkbox" style="float:right; margin-right: 2%">
+        <label>
+        <input data-toggle="toggle" type="checkbox" ng-model="isDebug"/>
+            Debug
+        </label>
     </div>
 </div>

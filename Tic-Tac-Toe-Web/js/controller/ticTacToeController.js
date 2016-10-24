@@ -18,7 +18,13 @@
 
         var jogada = 1;
 
-        this.getJogadas = function() {
+        this.dificuldade;
+
+        var dificuldades = ["Fácil", "Intermediário", "Difícil", "Master"];
+
+        var isDebug = $scope.isDebug;
+
+        this.getJogadas = function () {
             return self.jogadas;
         };
 
@@ -84,6 +90,14 @@
         };
 
         /**
+         * Verifica se o modo de jogo é contra bot.
+         * @return True se for contra bot.
+         */
+        this.vsBot = function() {
+            return TicTacToeService.vsBot;
+        }
+
+        /**
          * Retorna o tabuleiro do jogo.
          * @return Tabuleiro do jogo.
          */
@@ -100,11 +114,22 @@
         };
 
         /**
+         * Altera o nível de dificuldade do jogo para o próximo.
+         */
+        this.mudarDificuldade = function () {
+            self.resetar();
+            self.dificuldade = (self.dificuldade + 1) % 4;
+            BotTicTacService.setDificuldade(self.dificuldade);
+            $scope.dificuldade = dificuldades[self.dificuldade];
+            TicTacToeService.vezX = true;
+        };
+
+        /**
          * Indica se o jogo é contra o bot.
          * @return True se o jogo for contra o bot.
          */
         function vsBot() {
-            return TicTacToeService.vsBot; 
+            return TicTacToeService.vsBot;
         }
 
         /**
@@ -113,6 +138,9 @@
         (function () {
             $scope.modoJogo = SINGLE_PLAYER;
             $scope.infoJogo = TicTacToeService.attStatus();
+            self.dificuldade = 0;
+            BotTicTacService.setDificuldade(self.dificuldade);
+            $scope.dificuldade = dificuldades[self.dificuldade];
         })();
     }]);
 } ())
