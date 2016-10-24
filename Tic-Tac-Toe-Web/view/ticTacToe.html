@@ -8,7 +8,7 @@
         <div class="tabuleiro">
             <div ng-repeat="linha in controller.getTab()" class="col-xs-12 linha">
                 <div ng-repeat="pos in linha" ng-click="controller.realizarJogada(pos)" class="col-xs-4 sub-linha">
-                    <div class="text-center peca">{{ pos.peca }}</div>
+                    <div class="text-center peca">{{ pos.peca }}{{ pos.n }}</div>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
         <button class="btn btn-info botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
         <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
     </div>
-    <div class="col-xs-12" style="background-color: lightgray">
+    <!--<div class="col-xs-12" style="background-color: lightgray">
         <table class="table">
             <thead>
                 <tr>
@@ -32,6 +32,6 @@
                     <th>{{ jogada.x }} - {{ jogada.y }}</th>
                 </tr>
             </tbody>
-        </table>
+        </table>-->
     </div>
 </div>

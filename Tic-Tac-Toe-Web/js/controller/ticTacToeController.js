@@ -16,6 +16,8 @@
 
         this.jogadas = [];
 
+        var jogada = 1;
+
         this.getJogadas = function() {
             return self.jogadas;
         };
@@ -32,12 +34,16 @@
                     $scope.erro = "";
                     $scope.infoJogo = TicTacToeService.attStatus();
                     self.jogadas.push({ player: "Player", x: casa.x, y: casa.y });
+                    casa.n = jogada;
+                    jogada++;
                 } else {
                     $scope.erro = "Você deve escolher uma casa válida";
                 }
                 if (vsBot() && !TicTacToeService.vezX && !self.isFinalizado()) {
                     casa = BotTicTacService.jogar(self.getTab());
                     TicTacToeService.jogar(casa);
+                    casa.n = jogada;
+                    jogada++;
                     $scope.infoJogo = TicTacToeService.attStatus();
                     self.jogadas.push({ player: "Bot", x: casa.x, y: casa.y });
                 }
