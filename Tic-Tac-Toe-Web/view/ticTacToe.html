@@ -1,9 +1,9 @@
 <div ng-controller="TicTacToeController as controller" class="col-xs-12 tic-tac">
     <h1 id="titulo-principal" class="text-center"> Jogo da Velha </h1>
-    <h3 class="text-center" ng-if="controller.vsBot()" ng-bind="dificuldade"></h3>
-    <h3 class="text-center" ng-bind="modoJogo"></h3>
-    <h3 class="text-center" ng-bind="infoJogo"></h3>
-    <h4 class="text-center text-danger" ng-bind="erro"></h4>
+    <h3 class="text-center texto-low-padding" ng-if="controller.vsBot()" ng-bind="dificuldade"></h3>
+    <h3 class="text-center texto-low-padding" ng-bind="modoJogo"></h3>
+    <h3 class="text-center texto-low-padding" ng-bind="infoJogo"></h3>
+    <h4 class="text-center text-danger texto-low-padding" ng-bind="erro"></h4>
     <!-- tabuleiro -->
     <div class="col-xs-12 area-tabuleiro">
         <div class="tabuleiro">
@@ -16,7 +16,7 @@
     </div>
     <!-- Botão para limpar tabuleiro -->
     <div class="col-xs-12">
-        <button class="btn btn-warning botao" ng-if="controller.isFinalizado()||true" ng-click="controller.resetar()">Resetar</button>
+        <button class="btn btn-warning botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
         <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
         <button class="btn btn-primary botao" ng-click="controller.mudarDificuldade()">Alterar Dificuldade</button>
     </div>
