@@ -70,6 +70,7 @@
             self.tab.forEach(function (linha) {
                 linha.forEach(function (elemento) {
                     elemento.peca = undefined;
+                    elemento.n = undefined;  
                 });
             });
             jogadas = 0;

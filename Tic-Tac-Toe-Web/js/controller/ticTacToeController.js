@@ -60,6 +60,7 @@
                 TicTacToeService.vezX = true;
             }
             self.jogadas = [];
+            jogada = 1;
         };
 
         /**
