@@ -53,6 +53,7 @@
             if (vsBot()) {
                 TicTacToeService.vezX = true;
             }
+            self.jogadas = [];
         };
 
         /**
