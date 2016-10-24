@@ -38,6 +38,7 @@
                 c = armarJogada(),
                 d = primeiraJogada(),
                 e = jogaAleatorio();
+            console.log(a, b, c, d, e);
             var casa = a || b || c || d || e;
             PRIMEIRA_JOGADA = false;
             IS_TAB_VAZIO = false;
@@ -271,13 +272,18 @@
                 && armandoTipoUm
                 && ((possiveis[1].x === 2 || possiveis[1].x === 0) && (possiveis[1].y === 2 || possiveis[1].y === 0))
                 && (ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y);
+            var temMeioJogarLado = possiveis.length > 1
+                && getTab()[1][1].peca === PECA_BOT
+                && !isQuina(possiveis[0]);
             if ((fechouTipoUm || armandoTipoDois) && isUndf(getTab()[1][1].peca)) {
                 return getTab()[1][1];
             }
             if (armandoTipoDois) {
                 return desarmarTipoDois();
             }
-            if (existeMelhorOpcao) {
+            // Caso o bot tenha jogado no meio, é melhor não jogar em quinas 
+            // ou caso o jogador esteja armando o tipo 1 e não me prendeu.
+            if (existeMelhorOpcao || temMeioJogarLado) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
             }
             var podeNaoJogarMeio = possiveis.length > 1
@@ -285,7 +291,7 @@
 
             if (podeNaoJogarMeio && armandoTipoUm && ((ULTIMA_JOGADA.x === possiveis[1].x || ULTIMA_JOGADA.y === possiveis[1].y))) {
                 return getTab()[possiveis[1].x][possiveis[1].y];
-            } else if (!armandoTipoUm) {
+            } else if (!armandoTipoUm && !isQuina(possiveis[0])) {
                 return getTab()[possiveis[0].x][possiveis[0].y];
             }
         }
@@ -421,21 +427,13 @@
          */
         function primeiraJogada() {
             if (PRIMEIRA_JOGADA) {
-                var vsQuina = { 0: { 0: [1, 2], 2: [1, 0] }, 2: { 0: [1, 2], 2: [1, 0] } };
-                if (!isUndf(vsQuina[PECA_JOGADA.x]) && !isUndf(vsQuina[PECA_JOGADA.x][PECA_JOGADA.y])) {
-                    var pos = vsQuina[PECA_JOGADA.x][PECA_JOGADA.y];
-                    return getTab()[pos[0]][pos[1]];
-                }
                 var i, j;
-                if (PECA_JOGADA.x === 0 || PECA_JOGADA.x === 2) {
-                    i = PECA_JOGADA.x;
-                    j = vPos(PECA_JOGADA.y)[0];
-                    return getTab()[i][j];
-                } else if (PECA_JOGADA.y === 0 || PECA_JOGADA.y === 2) {
-                    i = vPos(PECA_JOGADA.x)[0];
-                    j = PECA_JOGADA.y;
+                if (PECA_JOGADA.x === 1 && PECA_JOGADA.y === 1) {
+                    i = Math.random() > 0.5 ? 0 : 2;
+                    j = Math.random() > 0.5 ? 0 : 2;
                     return getTab()[i][j];
                 }
+                return getTab()[1][1];
             }
         }
 
@@ -470,6 +468,11 @@
          */
         function isUndf(e) {
             return typeof (e) === 'undefined' || e === null;
+        }
+
+        function isQuina(peca) {
+            return peca.x === 2 && (peca.y === 0 || peca.y === 2)
+                || peca.y === 0 && (peca.x === 0 || peca.x === 2);
         }
 
         function Pos(x, y) {
