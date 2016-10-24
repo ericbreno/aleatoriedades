@@ -14,6 +14,12 @@
 
         var PRIMEIRA_MUDANCA = true;
 
+        this.jogadas = [];
+
+        this.getJogadas = function() {
+            return self.jogadas;
+        };
+
         /**
          * Realiza a jogada na casa selecionada, marcando de acordo 
          * com o jogador da vez.
@@ -25,6 +31,7 @@
                 if (TicTacToeService.jogar(casa)) {
                     $scope.erro = "";
                     $scope.infoJogo = TicTacToeService.attStatus();
+                    self.jogadas.push({ player: "Player", x: casa.x, y: casa.y });
                 } else {
                     $scope.erro = "Você deve escolher uma casa válida";
                 }
@@ -32,6 +39,7 @@
                     casa = BotTicTacService.jogar(self.getTab());
                     TicTacToeService.jogar(casa);
                     $scope.infoJogo = TicTacToeService.attStatus();
+                    self.jogadas.push({ player: "Bot", x: casa.x, y: casa.y });
                 }
             }
         };

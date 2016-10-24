@@ -18,4 +18,20 @@
         <button class="btn btn-info botao" ng-if="controller.isFinalizado()" ng-click="controller.resetar()">Resetar</button>
         <button class="btn btn-info botao" ng-click="controller.mudarTipoJogo()">Alterar modo</button>
     </div>
+    <div class="col-xs-12" style="background-color: lightgray">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Jogador</th>
+                    <td>Jogada</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="jogada in controller.getJogadas()">
+                    <th>{{ jogada.player }}</th>
+                    <th>{{ jogada.x }} - {{ jogada.y }}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

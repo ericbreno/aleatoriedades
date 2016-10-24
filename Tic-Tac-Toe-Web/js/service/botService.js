@@ -266,6 +266,7 @@
          */
         function decidirEntrePossiveisArmar(possiveis) {
             var armandoTipoUm = oponenteArmandoUm();
+            console.log("tipoum", armandoTipoUm);
             var armandoTipoDois = oponenteArmandoDois();
             var fechouTipoUm = oponenteFechouTipoUm();
             var existeMelhorOpcao = possiveis.length > 1
