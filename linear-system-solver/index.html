@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+
+<body ng-app="App">
+    <div class="container" ng-controller="MainController as controller">
+
+        <div ng-repeat="linha in controller.temp track by $index">
+            <div>{{ linha }}</div>
+        </div>
+
+        <form ng-submit="controller.temp.push(linha); linha = ''">
+            <input type="text" ng-model="linha">
+            <div>
+                <button class="btn btn-danger" type="submit">add</button>
+            </div>
+        </form>
+
+        <button class="btn btn-info" ng-click="controller.solve()">Solve</button>
+        <div class="row" ng-repeat="linha in controller.getMatrix() track by $index">
+            <p class="col-md-1" ng-repeat="e in linha">{{ e.toString() }}</p>
+        </div>
+        
+        <h2 class="text" ng-if="controller.isDone">Solução:</h2>
+        <div class="row container">
+            <p class="col-md-1" ng-repeat="linha in controller.getSolucao()">{{ linha }}</p>
+        </div>
+        <button class="btn btn-danger" ng-click="controller.reset()">Resetar</button>
+    </div>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Base -->
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+
+    <!-- Service -->
+    <script type="text/javascript" src="js/service/MainService.js"></script>
+
+    <!-- Controller -->
+    <script type="text/javascript" src="js/controller/MainController.js"></script>
+
+    <!-- Directive -->
+    <script type="text/javascript" src="js/directive/MainDirective.js"></script>
+</body>
