@@ -1,7 +1,7 @@
 var app = angular.module('App', []);
 'use strict';
 (function() {
-    app.service('MainService', [function() {
+    app.service('SolverService', [function() {
         var self = this;
 
         // Exemplo de sistema que tem solução.

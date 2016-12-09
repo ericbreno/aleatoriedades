@@ -1,5 +1,5 @@
 (function() {
-    app.controller('MainController', ['$rootScope', '$scope', 'MainService', function($rootScope, $scope, MainService) {
+    app.controller('MainController', ['$rootScope', '$scope', 'SolverService', function($rootScope, $scope, SolverService) {
         var self = this;
 
         this.matrix = [];
@@ -8,6 +8,9 @@
 
         this.isDone = false;
 
+        /**
+         * Soluciona o sistema linear.
+         */
         this.solve = function() {
             var final = [];
             for (var i = 0; i < self.temp.length; i++) {
@@ -17,14 +20,26 @@
                 }
                 final.push(linha);
             }
-            self.matrix = MainService.solve(final);
+            self.matrix = SolverService.solve(final);
             self.isDone = true;
         };
 
+        /**
+         * Recupera a matriz.
+         */
         this.getMatrix = function() {
             return self.matrix;
         };
 
+        /**
+         * Formata a solução para ser mostrada na view.
+         * Retorna uma lista de strings, onde cada string
+         * representa uma linha da matriz final, desde que não
+         * seja nula, e com as incógnitas juntas de seus respectivos
+         * coeficientes.
+         * 1x + 2w = 0
+         * 1w = 2
+         */
         this.getSolucao = function() {
             var disp = "xyzwabdef";
             var final = [];
@@ -33,7 +48,11 @@
                 var str = "";
                 for (var j = 0; j < line.length - 1; j++) {
                     if (line[j].get() !== 0) {
-                        str += (line[j].get() > 0 ? str !== "" ? "+" : "" : "-") + disp[j] + line[j].toString();
+                        var positive = line[j].get() > 0;
+                        var firstNumber = str === "";
+                        str += (positive ? !firstNumber ? "+" : "" : "-");
+                        str += disp[j];
+                        str += line[j].toString();
                     }
                 }
                 if (str !== "") {
@@ -44,6 +63,9 @@
             return final;
         };
 
+        /**
+         * Limpa a matriz.
+         */
         this.reset = function() {
             self.matrix = [];
             self.temp = [];
