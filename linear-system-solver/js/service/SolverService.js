@@ -1,11 +1,15 @@
-var app = angular.module('App', []);
-'use strict';
 (function() {
-    app.service('SolverService', [function() {
+    /**
+     * Service que encapsula toda a lógica para resolução de um sistema
+     * de equações lineares, dada sua matriz estendida.
+     */
+    app.service('SolverService', ['MagicNumber', function(MagicNumber) {
+        
         var self = this;
 
-        // Exemplo de sistema que tem solução.
-        // 2 -1 3 11 4 -3 2 0 1 1 1 6 3 1 1 4
+        var lg = console.log;
+
+        var lge = console.error;
 
         /**
          * Prepara a matriz passada, composta por
@@ -17,7 +21,7 @@ var app = angular.module('App', []);
             for (var i = 0; i < matrix.length; i++) {
                 var temp = [];
                 for (var j = 0; j < matrix[i].length; j++) {
-                    temp.push(new EricNumber(matrix[i][j]));
+                    temp.push(new MagicNumber(matrix[i][j]));
                 }
                 final.push(temp);
             }
@@ -27,24 +31,31 @@ var app = angular.module('App', []);
         /**
          * Resolve o sistema de equações lineares, passado em forma
          * de sua matriz estendida [A|B].
+         * 
          */
         this.solve = function(matrix) {
-            matrix = prepare(matrix);
+            result = prepare(matrix);
+            self.getLadder(result);
+            return result;
+        };
+
+        /**
+         * Realiza operações sobre a matriz para a deixar na forma
+         * escada reduzida.
+         * @param matrix Matriz a ser trabalhada.
+         */
+        this.getLadder = function(matrix) {
             var finalRange = Math.min(matrix.length, matrix[0].length - 1);
             for (var pos = 0; pos < finalRange; pos++) {
                 if (done(matrix, pos, finalRange)) {
                     break;
                 }
-                // zeroThisLine(matrix, pos);
                 swapZeroHere(matrix, pos);
                 tryPutOneFirst(matrix, pos, finalRange);
                 makePivot(matrix, pos);
                 zeroColumn(matrix, pos);
             }
-            return matrix;
         };
-
-        var lg = console.log;
 
         /**
          * Checa se o processo de resolução foi concluído, verificando
@@ -66,47 +77,12 @@ var app = angular.module('App', []);
         }
 
         /**
-         * Verifica se a linha atual é múltipla de alguma outra,
-         * caso seja, ela será zerada.
-         * @param matrix Matriz.
-         * @param pos Linha a ser zerada.
-         */
-        function zeroThisLine(matrix, pos) {
-            var baseLine = matrix[pos];
-            for (var i = 0; i < matrix.length; i++) {
-                if (i === pos) {
-                    continue;
-                }
-                if (isMultiple(baseLine, matrix[pos])) {
-                    for (var i = 0; i < baseLine.length; i++) {
-                        baseLine[i] = new EricNumber(0);
-                    }
-                    return;
-                }
-            }
-        }
-
-        /**
          * Troca duas linhas entre si.
          */
         function swap(matrix, pos1, pos2) {
             var aux = matrix[pos1];
             matrix[pos1] = matrix[pos2];
             matrix[pos2] = aux;
-        }
-
-        /**
-         * Verifica se uma linha é múltipla de outra, ou seja,
-         * todos os elementos de uma sejam divisíveis pelos da outra.
-         */
-        function isMultiple(line1, line2) {
-            for (var i = 0; i < line1.length; i++) {
-                if (line1[i].get() % line2[i].get() !== 0 &&
-                    line2[i].get() % line1[i].get() !== 0) {
-                    return false;
-                }
-            }
-            return true;
         }
 
         /**
@@ -213,82 +189,6 @@ var app = angular.module('App', []);
                 b = temp;
             } while (temp != 0);
             return a;
-        }
-
-        /**
-         * Objeto que representa um número no sistema.
-         * Dá suporte para as operações de adição por número de tipo
-         * primitivo e outros objetos Numero, multiplicação e divisão
-         * de forma similar.
-         * Os métodos de operações básicas dão suporte para chaining,
-         * por retornarem eles mesmos. Ex: o.add(o.mult(o.div(1)))
-         * O método get retorna um valor do tipo primitivo para
-         * o que o objeto representa.
-         * toString retorna o número formatado, na forma inteiro ou
-         * inteiro/inteiro.
-         */
-        function EricNumber(num) {
-            return {
-                n: num,
-                divisor: 1,
-                get: function() {
-                    return this.n / this.divisor;
-                },
-                add: function(v) {
-                    if (typeof v === 'object') {
-                        var commonDivisor = v.divisor * this.divisor;
-                        var thisv = commonDivisor / this.divisor * this.n;
-                        var otherv = commonDivisor / v.divisor * v.n;
-                        this.n = thisv + otherv;
-                        this.divisor = commonDivisor;
-                    } else {
-                        console.log("Im adding a number, should i?");
-                        this.n += v * this.divisor;
-                    }
-                    return this;
-                },
-                div: function(v) {
-                    if (typeof v === 'object') {
-                        var newDivisor = this.divisor * v.n;
-                        var newNumerator = this.n * v.divisor;
-                        this.n = newNumerator;
-                        this.divisor = newDivisor;
-                    } else {
-                        // console.log("Im dividing a number, should i?");
-                        this.divisor *= v;
-                    }
-                    return this;
-                },
-                mult: function(v) {
-                    if (typeof v === 'object') {
-                        var newDivisor = this.divisor * v.divisor;
-                        var newNumerator = this.n * v.n;
-                        this.n = newNumerator;
-                        this.divisor = newDivisor;
-                    } else {
-                        // console.log("Im multiplying a number, should i?");
-                        this.n *= v;
-                    }
-                    return this;
-                },
-                toString: function() {
-                    var saida = "";
-                    if ((this.n === 0 || this.n % this.divisor === 0) && this.n % 1 === 0) {
-                        saida = this.n / this.divisor;
-                    } else {
-                        var mmc = findLCM(this.n, this.divisor);
-                        this.n /= mmc;
-                        this.divisor /= mmc;
-                        var invertSignal = this.divisor < 0;
-                        if (invertSignal) {
-                            this.n *= -1;
-                            this.divisor *= -1;
-                        }
-                        saida = this.n + "/" + this.divisor;
-                    }
-                    return saida;
-                }
-            };
         }
     }]);
 }())

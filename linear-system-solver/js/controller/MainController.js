@@ -39,6 +39,7 @@
          * coeficientes.
          * 1x + 2w = 0
          * 1w = 2
+         * TODO: isso tá bem feio depois vou arrumar
          */
         this.getSolucao = function() {
             var disp = "xyzwabdef";
@@ -86,9 +87,13 @@
                     "0 1 3 -2",
                     "2 1 -4 3",
                     "2 3 2 -1"
+                ], [
+                    "3 5 0 1",
+                    "2 0 1 3",
+                    "5 1 -1 0"
                 ]
             ]
-            self.temp = exs[0];
+            self.temp = exs[3];
         })();
     }]);
 }())
