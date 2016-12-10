@@ -26,7 +26,7 @@
         
         <h2 class="text" ng-if="controller.isDone">Solução:</h2>
         <div class="row container">
-            <p class="col-md-1" ng-repeat="linha in controller.getSolucao()">{{ linha }}</p>
+            <div ng-repeat="linha in controller.getSolucao()">{{ linha }}</div>
         </div>
         <button class="btn btn-danger" ng-click="controller.reset()">Resetar</button>
     </div>

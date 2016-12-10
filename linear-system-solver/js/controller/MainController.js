@@ -50,9 +50,9 @@
                     if (line[j].get() !== 0) {
                         var positive = line[j].get() > 0;
                         var firstNumber = str === "";
-                        str += (positive ? !firstNumber ? "+" : "" : "-");
-                        str += disp[j];
+                        str += (positive && !firstNumber ? " +" : " ");
                         str += line[j].toString();
+                        str += disp[j];
                     }
                 }
                 if (str !== "") {
@@ -73,12 +73,22 @@
         };
 
         (function() {
-            self.temp = [
-                "2 -1 3 11",
-                "4 -3 2 0",
-                "1 1 1 6",
-                "3 1 1 4"
-            ];
+            var exs = [
+                [
+                    "2 -1 3 11",
+                    "4 -3 2 0",
+                    "1 1 1 6",
+                    "3 1 1 4"
+                ], [
+                    "1 6 -8 1",
+                    "2 6 -4 0"
+                ], [
+                    "0 1 3 -2",
+                    "2 1 -4 3",
+                    "2 3 2 -1"
+                ]
+            ]
+            self.temp = exs[0];
         })();
     }]);
 }())

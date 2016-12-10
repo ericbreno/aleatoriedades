@@ -30,25 +30,31 @@ var app = angular.module('App', []);
          */
         this.solve = function(matrix) {
             matrix = prepare(matrix);
-            for (var pos = 0; pos < matrix.length - 1; pos++) {
-                if (done(matrix, pos)) {
-                    return;
+            var finalRange = Math.min(matrix.length, matrix[0].length - 1);
+            for (var pos = 0; pos < finalRange; pos++) {
+                if (done(matrix, pos, finalRange)) {
+                    break;
                 }
-                zeroThisLine(matrix, pos);
+                // zeroThisLine(matrix, pos);
                 swapZeroHere(matrix, pos);
-                tryPutOneFirst(matrix, pos);
+                tryPutOneFirst(matrix, pos, finalRange);
                 makePivot(matrix, pos);
                 zeroColumn(matrix, pos);
             }
             return matrix;
         };
 
+        var lg = console.log;
+
         /**
          * Checa se o processo de resolução foi concluído, verificando
          * se ainda existem linhas não nulas que precisam ser processadas.
+         * @param matrix Matriz.
+         * @param pos Linha a se iniciar a verificação.
+         * @param final Linha limite para se verificar.
          */
-        function done(matrix, pos) {
-            for (var i = pos; i < matrix.length; i++) {
+        function done(matrix, pos, final) {
+            for (var i = pos; i < final; i++) {
                 var line = matrix[i];
                 for (var j = 0; j < line.length - 1; j++) {
                     if (line[j].get() !== 0) {
@@ -62,6 +68,8 @@ var app = angular.module('App', []);
         /**
          * Verifica se a linha atual é múltipla de alguma outra,
          * caso seja, ela será zerada.
+         * @param matrix Matriz.
+         * @param pos Linha a ser zerada.
          */
         function zeroThisLine(matrix, pos) {
             var baseLine = matrix[pos];
@@ -123,7 +131,7 @@ var app = angular.module('App', []);
          */
         function makePivot(matrix, pos) {
             var lineOn = matrix[pos];
-            var coef = lineOn[pos];
+            var coef = angular.copy(lineOn[pos]);
             for (var i = 0; i < lineOn.length; i++) {
                 lineOn[i].div(coef);
             }
@@ -143,10 +151,13 @@ var app = angular.module('App', []);
                     continue;
                 }
                 var lineToZeroCol = matrix[lin];
+                var coef = angular.copy(lineToZeroCol[pos]);
                 for (var i = 0; i < lineToZeroCol.length; i++) {
-                    var coef = angular.copy(lineToZeroCol[pos]);
+                    var localCoef = angular.copy(coef);
                     var base = angular.copy(baseLine[i]);
-                    lineToZeroCol[i].add(base.mult(coef.mult(-1)));
+                    // console.log(lineToZeroCol[i].get() + "+" + base.get() + "*-" + localCoef.get());
+                    lineToZeroCol[i].add(base.mult(localCoef.mult(-1)));
+                    // console.log("final: " + lineToZeroCol[i].get());
                 }
             }
         }
@@ -159,18 +170,27 @@ var app = angular.module('App', []);
          * seja possível, nada é feito.
          * @param matrix Matriz
          * @param pos Linha em que se está trabalhando.
+         * @param range Limite para procura.
          */
-        function tryPutOneFirst(matrix, pos) {
-            var toSwap = checkNHere(1, pos, matrix);
+        function tryPutOneFirst(matrix, pos, range) {
+            var toSwap = checkNHere(1, pos, range, matrix);
             if (toSwap && toSwap > pos) {
-                var temp = matrix[toSwap];
-                matrix[toSwap] = matrix[pos];
-                matrix[pos] = temp;
+                swap(matrix, pos, toSwap);
             }
         }
 
-        function checkNHere(n, pos, matrix) {
-            for (var i = 0; i < matrix.length; i++) {
+        /**
+         * Verifica se o elemento N está na coluna pos,
+         * entre a linha pos e range.
+         * @param n Elemento a ser buscado nas colunas.
+         * @param pos Coluna a se buscar o elemento.
+         * @param range Linha máxima a se buscar o elemento.
+         * @param matrix Matriz.
+         * @return A linha que contém o elemento na dada coluna, -1
+         * caso não exista.
+         */
+        function checkNHere(n, pos, range, matrix) {
+            for (var i = 0; i < range; i++) {
                 if (matrix[i][pos].get() === n) {
                     return i;
                 }
@@ -192,7 +212,7 @@ var app = angular.module('App', []);
                 a = b;
                 b = temp;
             } while (temp != 0);
-            return (num1 * num2) / a;
+            return a;
         }
 
         /**
@@ -234,7 +254,7 @@ var app = angular.module('App', []);
                         this.n = newNumerator;
                         this.divisor = newDivisor;
                     } else {
-                        console.log("Im dividing a number, should i?");
+                        // console.log("Im dividing a number, should i?");
                         this.divisor *= v;
                     }
                     return this;
@@ -246,18 +266,25 @@ var app = angular.module('App', []);
                         this.n = newNumerator;
                         this.divisor = newDivisor;
                     } else {
-                        console.log("Im multiplying a number, should i?");
+                        // console.log("Im multiplying a number, should i?");
                         this.n *= v;
                     }
                     return this;
                 },
                 toString: function() {
                     var saida = "";
-                    if (this.n === 0 || this.n % this.divisor === 0) {
+                    if ((this.n === 0 || this.n % this.divisor === 0) && this.n % 1 === 0) {
                         saida = this.n / this.divisor;
                     } else {
                         var mmc = findLCM(this.n, this.divisor);
-                        saida = (this.n / mmc) + "/" + (this.divisor / mmc);
+                        this.n /= mmc;
+                        this.divisor /= mmc;
+                        var invertSignal = this.divisor < 0;
+                        if (invertSignal) {
+                            this.n *= -1;
+                            this.divisor *= -1;
+                        }
+                        saida = this.n + "/" + this.divisor;
                     }
                     return saida;
                 }
