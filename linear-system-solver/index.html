@@ -8,27 +8,30 @@
 <body ng-app="App">
     <div class="container" ng-controller="MainController as controller">
 
-        <div ng-repeat="linha in controller.temp track by $index">
+        <div class="text-center" ng-repeat="linha in controller.temp track by $index">
             <div>{{ linha }}</div>
         </div>
 
         <form ng-submit="controller.temp.push(linha); linha = ''">
-            <input type="text" ng-model="linha">
+            <input class="center-block" type="text" ng-model="linha">
             <div>
-                <button class="btn btn-danger" type="submit">add</button>
+                <button class="btn btn-danger center-block" type="submit">add</button>
             </div>
         </form>
 
-        <button class="btn btn-info" ng-click="controller.solve()">Solve</button>
-        <div class="row" ng-repeat="linha in controller.getMatrix() track by $index">
-            <p class="col-md-1" ng-repeat="e in linha">{{ e.toString() }}</p>
-        </div>
-        
-        <h2 class="text" ng-if="controller.isDone">Solução:</h2>
+        <button class="btn btn-info center-block" ng-click="controller.solve()">Solve</button>
+
+        <div class="text-center" ng-repeat="linha in controller.getMatrix() track by $index" ng-bind="controller.formatarLinha(linha)"></div>
+
+        <h2 class="text-center" ng-if="controller.isDone">Solução:</h2>
+
         <div class="row container">
-            <div ng-repeat="linha in controller.getSolucao()">{{ linha }}</div>
+            <div class="text-center" ng-repeat="linha in controller.getSolucao()" ng-bind="linha"></div>
         </div>
-        <button class="btn btn-danger" ng-click="controller.reset()">Resetar</button>
+
+        <button class="btn btn info center-block" ng-click="controller.prevStep()">prev</button>
+        <button class="btn btn info center-block" ng-click="controller.nextStep()">Next</button>
+        <button class="btn btn-danger center-block" ng-click="controller.reset()">Resetar</button>
     </div>
 
     <!-- CSS -->

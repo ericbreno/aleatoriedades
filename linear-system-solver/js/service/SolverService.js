@@ -4,12 +4,14 @@
      * de equações lineares, dada sua matriz estendida.
      */
     app.service('SolverService', ['MagicNumber', function(MagicNumber) {
-        
+
         var self = this;
 
         var lg = console.log;
 
         var lge = console.error;
+
+        var acp = angular.copy;
 
         /**
          * Prepara a matriz passada, composta por
@@ -34,8 +36,11 @@
          * 
          */
         this.solve = function(matrix) {
-            result = prepare(matrix);
-            self.getLadder(result);
+            result = {
+                matrix: prepare(matrix),
+                steps: []
+            }
+            result.steps = self.getLadder(result.matrix);
             return result;
         };
 
@@ -46,6 +51,9 @@
          */
         this.getLadder = function(matrix) {
             var finalRange = Math.min(matrix.length, matrix[0].length - 1);
+            var steps = [];
+
+            steps.push(acp(matrix));
             for (var pos = 0; pos < finalRange; pos++) {
                 if (done(matrix, pos, finalRange)) {
                     break;
@@ -54,7 +62,9 @@
                 tryPutOneFirst(matrix, pos, finalRange);
                 makePivot(matrix, pos);
                 zeroColumn(matrix, pos);
+                steps.push(acp(matrix));
             }
+            return steps;
         };
 
         /**
@@ -107,7 +117,7 @@
          */
         function makePivot(matrix, pos) {
             var lineOn = matrix[pos];
-            var coef = angular.copy(lineOn[pos]);
+            var coef = acp(lineOn[pos]);
             for (var i = 0; i < lineOn.length; i++) {
                 lineOn[i].div(coef);
             }
@@ -127,10 +137,10 @@
                     continue;
                 }
                 var lineToZeroCol = matrix[lin];
-                var coef = angular.copy(lineToZeroCol[pos]);
+                var coef = acp(lineToZeroCol[pos]);
                 for (var i = 0; i < lineToZeroCol.length; i++) {
-                    var localCoef = angular.copy(coef);
-                    var base = angular.copy(baseLine[i]);
+                    var localCoef = acp(coef);
+                    var base = acp(baseLine[i]);
                     // console.log(lineToZeroCol[i].get() + "+" + base.get() + "*-" + localCoef.get());
                     lineToZeroCol[i].add(base.mult(localCoef.mult(-1)));
                     // console.log("final: " + lineToZeroCol[i].get());
