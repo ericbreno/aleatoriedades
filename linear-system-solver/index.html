@@ -13,7 +13,7 @@
             <div>{{ linha }}</div>
         </div>
 
-        <form ng-submit="controller.temp.push(linha); linha = ''" ng-if="!controller.isDone">
+        <form ng-submit="controller.pushTemp(linha)" ng-if="!controller.isDone">
             <input class="center-block" type="text" ng-model="linha">
             <div>
                 <button class="btn btn-danger center-block" type="submit">add</button>

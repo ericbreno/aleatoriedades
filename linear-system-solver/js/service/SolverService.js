@@ -30,6 +30,25 @@
             return final;
         }
 
+        function addStep(matrix, steps) {
+            if (steps.length === 0) {
+                steps.push(acp(matrix));
+                return;
+            }
+            var lastStep = steps[steps.length - 1];
+            var someDifferent = false;
+            for (var i = 0; i < matrix.length; i++) {
+                for (var j = 0; j < matrix[i].length; j++) {
+                    if (!matrix[i][j].equals(lastStep[i][j])) {
+                        someDifferent = true;
+                    }
+                }
+            }
+            if (someDifferent) {
+                steps.push(acp(matrix));
+            }
+        }
+
         /**
          * Resolve o sistema de equações lineares, passado em forma
          * de sua matriz estendida [A|B].
@@ -53,16 +72,23 @@
             var finalRange = Math.min(matrix.length, matrix[0].length - 1);
             var steps = [];
 
-            steps.push(acp(matrix));
+            addStep(matrix, steps);
+            var pivotPos = -1;
             for (var pos = 0; pos < finalRange; pos++) {
                 if (done(matrix, pos, finalRange)) {
                     break;
                 }
-                swapZeroHere(matrix, pos);
-                tryPutOneFirst(matrix, pos, finalRange);
-                makePivot(matrix, pos);
-                zeroColumn(matrix, pos);
-                steps.push(acp(matrix));
+                // Caso o próximo pivot não vá ficar em j+1
+                do {
+                    pivotPos++;
+                    swapZeroHere(matrix, pos, pivotPos);
+                    tryPutOneFirst(matrix, pos, pivotPos);
+                } while (matrix[pos][pivotPos].get() === 0 && pivotPos < matrix[pos].length - 1);
+
+                makePivot(matrix, pos, pivotPos);
+                addStep(matrix, steps);
+                zeroColumn(matrix, pos, pivotPos);
+                addStep(matrix, steps);
             }
             return steps;
         };
@@ -99,10 +125,13 @@
          * Verifica se o elemento na posição atual, que deveria
          * ser o pivot (1) é zero, caso seja, e não seja a última
          * linha, ela é trocada com a próxima.
+         * @param matrix Matriz
+         * @param pos Linha
+         * @param index Coluna
          */
-        function swapZeroHere(matrix, pos) {
+        function swapZeroHere(matrix, pos, index) {
             var line = matrix[pos];
-            if (line[pos].get() === 0 && pos < matrix.length) {
+            if (line[index].get() === 0 && pos < matrix.length - 1) {
                 swap(matrix, pos, pos + 1);
             }
         }
@@ -111,13 +140,18 @@
          * Realiza a operação elementar de múltiplicar uma
          * dada linha por um coeficiente para que o pivot,
          * elemento que esteja na pos-ésima linha e pos-
-         * ésima coluna se torne um.
+         * ésima coluna se torne um. Caso o elemento da posição
+         * seja zero, o seguinte é tentado ser convertido no
+         * pivot, até que se chegue no último elemento
+         * referente à matriz dos coeficientes.
          * @param matrix Matriz
-         * @param pos Posição de referência.
+         * @param pos Posição de referência - linha.
+         * @param index Coluna
          */
-        function makePivot(matrix, pos) {
+        function makePivot(matrix, pos, index) {
+            var toZero = [pos];
             var lineOn = matrix[pos];
-            var coef = acp(lineOn[pos]);
+            var coef = acp(lineOn[index]);
             for (var i = 0; i < lineOn.length; i++) {
                 lineOn[i].div(coef);
             }
@@ -129,15 +163,16 @@
          * linha.
          * @param matrix Matriz
          * @param pos Posição de referência.
+         * @param index Coluna
          */
-        function zeroColumn(matrix, pos) {
+        function zeroColumn(matrix, pos, index) {
             var baseLine = matrix[pos];
             for (var lin = 0; lin < matrix.length; lin++) {
                 if (lin === pos) {
                     continue;
                 }
                 var lineToZeroCol = matrix[lin];
-                var coef = acp(lineToZeroCol[pos]);
+                var coef = acp(lineToZeroCol[index]);
                 for (var i = 0; i < lineToZeroCol.length; i++) {
                     var localCoef = acp(coef);
                     var base = acp(baseLine[i]);
@@ -156,10 +191,10 @@
          * seja possível, nada é feito.
          * @param matrix Matriz
          * @param pos Linha em que se está trabalhando.
-         * @param range Limite para procura.
+         * @param index Coluna
          */
-        function tryPutOneFirst(matrix, pos, range) {
-            var toSwap = checkNHere(1, pos, range, matrix);
+        function tryPutOneFirst(matrix, pos, index) {
+            var toSwap = checkNHere(1, index, matrix);
             if (toSwap && toSwap > pos) {
                 swap(matrix, pos, toSwap);
             }
@@ -170,35 +205,17 @@
          * entre a linha pos e range.
          * @param n Elemento a ser buscado nas colunas.
          * @param pos Coluna a se buscar o elemento.
-         * @param range Linha máxima a se buscar o elemento.
          * @param matrix Matriz.
          * @return A linha que contém o elemento na dada coluna, -1
          * caso não exista.
          */
-        function checkNHere(n, pos, range, matrix) {
-            for (var i = 0; i < range; i++) {
+        function checkNHere(n, pos, matrix) {
+            for (var i = 0; i < matrix.length; i++) {
                 if (matrix[i][pos].get() === n) {
                     return i;
                 }
             }
             return -1;
-        }
-
-        /**
-         * Encontra o MMC (LCM) de dois números.
-         * @return MMC.
-         */
-        function findLCM(num1, num2) {
-            var temp;
-            var a = num1;
-            var b = num2;
-            do {
-                temp = a % b;
-
-                a = b;
-                b = temp;
-            } while (temp != 0);
-            return a;
         }
     }]);
 }())

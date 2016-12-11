@@ -47,6 +47,13 @@
             stepOn = Math.max(stepOn - 1, 0);
         };
 
+        this.pushTemp = function(linha) {
+            if (linha === "") {
+                return;
+            }
+            self.temp.push(linha);
+        };
+
         this.formatarLinha = function(linha) {
             var str = "";
             linha.forEach(function(v) {
@@ -124,9 +131,14 @@
                     "3 5 0 1",
                     "2 0 1 3",
                     "5 1 -1 0"
+                ],
+                [
+                    "2 0 0 0 2",
+                    "0 3 0 0 3",
+                    "0 0 0 4 4"
                 ]
             ]
-            self.temp = exs[3];
+            self.temp = exs[4];
         })();
     }]);
 }())

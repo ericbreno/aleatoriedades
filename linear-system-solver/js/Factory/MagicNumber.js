@@ -106,6 +106,16 @@ var app = angular.module('App', []);
         };
 
         /**
+         * Verifica se dois objetos MagicNumber são iguais.
+         */
+        MagicNumber.prototype.equals = function(other) {
+            if (typeof other === "undefined") {
+                return false;
+            }
+            return this.toString() === other.toString();
+        }
+
+        /**
          * Encontra o MMC (LCM) de dois números.
          * @return MMC.
          */
