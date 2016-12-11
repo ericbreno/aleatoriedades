@@ -48,7 +48,7 @@
         };
 
         this.pushTemp = function(linha) {
-            if (linha === "") {
+            if (linha.trim() === '') {
                 return;
             }
             self.temp.push(linha);

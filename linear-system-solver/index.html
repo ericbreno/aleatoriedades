@@ -13,14 +13,14 @@
             <div>{{ linha }}</div>
         </div>
 
-        <form ng-submit="controller.pushTemp(linha)" ng-if="!controller.isDone">
+        <form ng-submit="controller.pushTemp(linha); linha = ''" ng-if="!controller.isDone">
             <input class="center-block" type="text" ng-model="linha">
             <div>
-                <button class="btn btn-danger center-block" type="submit">add</button>
+                <button ng-disabled="!linha || linha.trim() === ''" class="btn btn-danger center-block" type="submit">add</button>
             </div>
         </form>
 
-        <button class="btn btn-info center-block" ng-click="controller.solve()" ng-if="!controller.isDone">Solve</button>
+        <button ng-disabled="controller.temp.length === 0" class="btn btn-info center-block" ng-click="controller.solve()" ng-if="!controller.isDone">Solve</button>
 
         <h3 class="text-center" ng-if="controller.isDone">Forma escada, passo {{ controller.getStepOn() }}</h3>
         <div class="text-center" ng-repeat="linha in controller.getMatrix() track by $index" ng-bind="controller.formatarLinha(linha)"></div>
@@ -34,8 +34,9 @@
 
             <button class="btn btn info center-block" ng-click="controller.prevStep()">Prev</button>
             <button class="btn btn info center-block" ng-click="controller.nextStep()">Next</button>
-            <button class="btn btn-danger center-block" ng-click="controller.reset()">Resetar</button>
         </div>
+        <button class="btn btn-danger center-block" ng-click="controller.reset()">Resetar</button>
+
     </div>
 
     <!-- CSS -->
