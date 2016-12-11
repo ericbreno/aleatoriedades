@@ -8,30 +8,34 @@
 <body ng-app="App">
     <div class="container" ng-controller="MainController as controller">
 
+        <h3 class="text-center">Matriz estendida</h3>
         <div class="text-center" ng-repeat="linha in controller.temp track by $index">
             <div>{{ linha }}</div>
         </div>
 
-        <form ng-submit="controller.temp.push(linha); linha = ''">
+        <form ng-submit="controller.temp.push(linha); linha = ''" ng-if="!controller.isDone">
             <input class="center-block" type="text" ng-model="linha">
             <div>
                 <button class="btn btn-danger center-block" type="submit">add</button>
             </div>
         </form>
 
-        <button class="btn btn-info center-block" ng-click="controller.solve()">Solve</button>
+        <button class="btn btn-info center-block" ng-click="controller.solve()" ng-if="!controller.isDone">Solve</button>
 
+        <h3 class="text-center" ng-if="controller.isDone">Forma escada, passo {{ controller.getStepOn() }}</h3>
         <div class="text-center" ng-repeat="linha in controller.getMatrix() track by $index" ng-bind="controller.formatarLinha(linha)"></div>
 
         <h2 class="text-center" ng-if="controller.isDone">Solução:</h2>
 
-        <div class="row container">
-            <div class="text-center" ng-repeat="linha in controller.getSolucao()" ng-bind="linha"></div>
-        </div>
+        <div ng-if="controller.isDone">
+            <div class="row container">
+                <div class="text-center" ng-repeat="linha in controller.getSolucao()" ng-bind="linha"></div>
+            </div>
 
-        <button class="btn btn info center-block" ng-click="controller.prevStep()">prev</button>
-        <button class="btn btn info center-block" ng-click="controller.nextStep()">Next</button>
-        <button class="btn btn-danger center-block" ng-click="controller.reset()">Resetar</button>
+            <button class="btn btn info center-block" ng-click="controller.prevStep()">Prev</button>
+            <button class="btn btn info center-block" ng-click="controller.nextStep()">Next</button>
+            <button class="btn btn-danger center-block" ng-click="controller.reset()">Resetar</button>
+        </div>
     </div>
 
     <!-- CSS -->

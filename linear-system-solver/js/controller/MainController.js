@@ -53,7 +53,11 @@
                 str += str === "" ?  v : " " + v;
             });
             return str;
-        }
+        };
+
+        this.getStepOn = function() {
+            return stepOn + 1 + "/" + result.steps.length;
+        };
 
         /**
          * Formata a solução para ser mostrada na view.
